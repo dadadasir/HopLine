@@ -1,0 +1,222 @@
+{
+  "snapshot": {
+    "collectedAt": 1793059200000,
+    "os": {
+      "status": "complete",
+      "data": {
+        "id": "debian",
+        "version": "12",
+        "name": "Debian GNU/Linux",
+        "kernel": "Linux 6.1.0-demo",
+        "architecture": "x86_64"
+      }
+    },
+    "listeners": {
+      "status": "partial",
+      "data": [
+        {
+          "protocol": "tcp",
+          "address": "127.0.0.1",
+          "port": 22,
+          "process": "sshd"
+        },
+        {
+          "protocol": "tcp6",
+          "address": "::",
+          "port": 443,
+          "process": null
+        }
+      ],
+      "note": "Process names are not visible"
+    },
+    "tls": {
+      "status": "unavailable",
+      "reason": "not-installed",
+      "note": "openssl"
+    },
+    "sshd": {
+      "status": "complete",
+      "data": {
+        "port": "22",
+        "permitrootlogin": "yes",
+        "passwordauthentication": "yes",
+        "permitemptypasswords": "no"
+      }
+    },
+    "firewall": {
+      "status": "complete",
+      "data": {
+        "active": false
+      }
+    },
+    "updates": {
+      "status": "complete",
+      "data": {
+        "auto": false,
+        "reboot": false,
+        "pending": 0
+      }
+    },
+    "accounts": {
+      "status": "complete",
+      "data": {
+        "uid0": [
+          "root"
+        ],
+        "empty": null
+      }
+    },
+    "bruteforce": {
+      "status": "complete",
+      "data": {
+        "active": false
+      }
+    },
+    "processes": {
+      "status": "complete",
+      "data": [
+        "1 root 0.0 sshd /usr/sbin/sshd",
+        "15 demo 0.0 ps ps -A"
+      ]
+    }
+  },
+  "results": [
+    {
+      "id": "ssh-root-login",
+      "severity": "high",
+      "title": "security.ssh-root-login",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.ssh-root-login\",\"params\":{\"raw\":\"yes\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.ssh-root-login",
+        "commands": "# security.command.ssh-first\n# security.command.ssh-setting permitrootlogin prohibit-password\nsudoedit /etc/ssh/sshd_config\n# security.command.ssh-validate\nsudo sshd -t && (sudo systemctl reload sshd || sudo systemctl reload ssh)"
+      }
+    },
+    {
+      "id": "ssh-password-auth",
+      "severity": "high",
+      "title": "security.ssh-password-auth",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.ssh-password-auth\",\"params\":{\"raw\":\"yes\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.ssh-password-auth",
+        "commands": "# security.command.ssh-first\n# security.command.ssh-setting passwordauthentication no\nsudoedit /etc/ssh/sshd_config\n# security.command.ssh-validate\nsudo sshd -t && (sudo systemctl reload sshd || sudo systemctl reload ssh)"
+      }
+    },
+    {
+      "id": "ssh-empty-passwords",
+      "severity": "high",
+      "title": "security.ssh-empty-passwords",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.ssh-empty-passwords\",\"params\":{\"raw\":\"no\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "firewall-off",
+      "severity": "high",
+      "title": "security.firewall-off",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.firewall-off\",\"params\":{\"raw\":\"{\\\"active\\\":false}\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.firewall-off",
+        "commands": "# security.command.firewall-first\n# security.command.ufw\nsudo ufw allow 22/tcp && sudo ufw enable\n# security.command.firewalld\nsudo firewall-offline-cmd --add-port=22/tcp && sudo systemctl enable --now firewalld\n# security.command.firewall-verify\nsudo firewall-cmd --list-all"
+      }
+    },
+    {
+      "id": "db-exposed",
+      "severity": "high",
+      "title": "security.db-exposed",
+      "status": "unknown",
+      "evidence": "{\"key\":\"security.evidence.db-exposed\",\"params\":{\"raw\":\"[]\",\"state\":\"unknown\",\"reason\":\"\"},\"note\":\"Process names are not visible\"}"
+    },
+    {
+      "id": "docker-api-exposed",
+      "severity": "high",
+      "title": "security.docker-api-exposed",
+      "status": "unknown",
+      "evidence": "{\"key\":\"security.evidence.docker-api-exposed\",\"params\":{\"raw\":\"[]\",\"state\":\"unknown\",\"reason\":\"\"},\"note\":\"Process names are not visible\"}"
+    },
+    {
+      "id": "miner-process",
+      "severity": "high",
+      "title": "security.miner-process",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.miner-process\",\"params\":{\"raw\":\"[]\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "uid0-accounts",
+      "severity": "high",
+      "title": "security.uid0-accounts",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.uid0-accounts\",\"params\":{\"raw\":\"[]\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "empty-password-accounts",
+      "severity": "high",
+      "title": "security.empty-password-accounts",
+      "status": "unknown",
+      "evidence": "{\"key\":\"security.evidence.empty-password-accounts\",\"params\":{\"raw\":\"null\",\"state\":\"unknown\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "os-eol",
+      "severity": "medium",
+      "title": "security.os-eol",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.os-eol\",\"params\":{\"raw\":\"{\\\"os\\\":\\\"debian\\\",\\\"version\\\":\\\"12\\\",\\\"date\\\":\\\"2026-10-27\\\"}\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "auto-updates-off",
+      "severity": "medium",
+      "title": "security.auto-updates-off",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.auto-updates-off\",\"params\":{\"raw\":\"false\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.auto-updates-off",
+        "commands": "# security.command.auto-apt\nsudo apt-get install unattended-upgrades && sudo dpkg-reconfigure unattended-upgrades\n# security.command.auto-dnf\nsudo dnf install dnf-automatic\nsudoedit /etc/dnf/automatic.conf\nsudo systemctl enable --now dnf-automatic.timer"
+      }
+    },
+    {
+      "id": "security-updates-pending",
+      "severity": "medium",
+      "title": "security.security-updates-pending",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.security-updates-pending\",\"params\":{\"raw\":\"0\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "tls-expiring",
+      "severity": "medium",
+      "title": "security.tls-expiring",
+      "status": "unknown",
+      "evidence": "{\"key\":\"security.evidence.tls-expiring\",\"params\":{\"raw\":\"\",\"state\":\"unknown\",\"reason\":\"not-installed\"},\"note\":\"openssl\"}"
+    },
+    {
+      "id": "reboot-required",
+      "severity": "low",
+      "title": "security.reboot-required",
+      "status": "pass",
+      "evidence": "{\"key\":\"security.evidence.reboot-required\",\"params\":{\"raw\":\"false\",\"state\":\"pass\",\"reason\":\"\"}}"
+    },
+    {
+      "id": "no-bruteforce-guard",
+      "severity": "low",
+      "title": "security.no-bruteforce-guard",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.no-bruteforce-guard\",\"params\":{\"raw\":\"{\\\"password\\\":true,\\\"guard\\\":{\\\"active\\\":false}}\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.no-bruteforce-guard",
+        "commands": "# security.command.guard\nsudo apt-get install fail2ban\nsudoedit /etc/fail2ban/jail.local\nsudo systemctl enable --now fail2ban"
+      }
+    },
+    {
+      "id": "ssh-default-port",
+      "severity": "low",
+      "title": "security.ssh-default-port",
+      "status": "fail",
+      "evidence": "{\"key\":\"security.evidence.ssh-default-port\",\"params\":{\"raw\":\"22\",\"state\":\"fail\",\"reason\":\"\"}}",
+      "fix": {
+        "explain": "security.fix.ssh-default-port",
+        "commands": ""
+      }
+    }
+  ],
+  "score": 27
+}

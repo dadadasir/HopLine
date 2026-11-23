@@ -1,0 +1,1 @@
+README screenshots come from the HopLine app with fictional host data. The paired Chinese and English images cover Overview, billing, the host heading, and the connection editor with its saved password masked.

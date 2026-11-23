@@ -1,0 +1,28 @@
+===HOPLINE:os-release===
+NAME="Alpine Linux"
+ID=alpine
+VERSION_ID="3.20.10"
+PRETTY_NAME="Alpine Linux"
+===HOPLINE:uname===
+Linux alpine-3.example.test 6.1.0-demo #1 SMP aarch64 GNU/Linux
+===HOPLINE:id===
+uid=1001(demo) gid=1001(demo) groups=1001(demo)
+===HOPLINE:df===
+Filesystem       1024-blocks    Used Available Capacity Mounted on
+/dev/vda1          1000000     100000   900000    10% /etc/hosts
+tmpfs 65536 0 65536 0% /dev
+===HOPLINE:memory===
+             total used free shared buff/cache available
+Mem: 4000000 500000 2500000 0 1000000 3000000
+Swap: 100000 0 100000
+===HOPLINE:loadavg===
+0.10 0.20 0.30 1/14 42
+===HOPLINE:listeners===
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address Foreign Address State PID/Program name
+tcp 0 0 0.0.0.0:22 0.0.0.0:* LISTEN -
+tcp6 0 0 :::443 :::* LISTEN 15/nginx
+===HOPLINE:ps===
+PID USER COMMAND COMMAND
+1 root sshd /usr/sbin/sshd
+15 demo ps ps -A

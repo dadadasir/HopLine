@@ -1,0 +1,13 @@
+node_modules/
+/pro/
+out/
+release/
+dist/
+*.log
+.DS_Store
+.vite/
+coverage/
+uploads/
+*.hopline-backup
+.cache/
+tests/distro/.runs/

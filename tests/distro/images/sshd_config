@@ -1,0 +1,12 @@
+Port 22
+ListenAddress 0.0.0.0
+PermitRootLogin yes
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+KbdInteractiveAuthentication no
+UsePAM no
+AuthorizedKeysFile .ssh/authorized_keys
+Subsystem sftp internal-sftp
+PrintMotd no
+UseDNS no

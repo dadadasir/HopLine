@@ -1,0 +1,60 @@
+===HOPLINE:os===
+ID=debian
+VERSION_ID="10"
+PRETTY_NAME="Debian GNU/Linux 10"
+Linux 6.1 x86_64
+
+#HOPLINE-END
+===HOPLINE:sshd===
+#HOPLINE-SOURCE effective
+permitrootlogin yes
+passwordauthentication yes
+permitemptypasswords yes
+port 22
+
+#HOPLINE-END
+===HOPLINE:firewall===
+#HOPLINE-SOURCE ufw
+Status: inactive
+
+#HOPLINE-END
+===HOPLINE:listeners===
+LISTEN 0 128 0.0.0.0:3306 0.0.0.0:* users:(("mysqld",pid=30,fd=1))
+LISTEN 0 128 [::]:2375 [::]:* users:(("docker",pid=31,fd=1))
+
+#HOPLINE-END
+===HOPLINE:updates===
+auto=no
+#HOPLINE-SOURCE apt
+Inst openssl [1.0] (1.1 Debian-Security:10/buster-security [amd64])
+Inst unrelated [1.0] (1.1 Debian:10/buster [amd64])
+Inst security-agent [1.0] (1.1 Debian:10/buster [amd64])
+pending-complete=yes
+reboot=yes
+
+#HOPLINE-END
+===HOPLINE:bruteforce===
+active=no
+
+#HOPLINE-END
+===HOPLINE:accounts===
+uid0=root
+uid0=backup
+empty=guest
+shadow=readable
+
+#HOPLINE-END
+===HOPLINE:processes===
+  PID USER %CPU COMMAND COMMAND
+  123 root 99.0 xmrig /tmp/xmrig --donate-level 1
+
+#HOPLINE-END
+===HOPLINE:tls===
+#HOPLINE-CERT referenced
+notAfter=Oct 28 10:20:30 2026 GMT
+subject=CN = private.example.com
+#HOPLINE-CERT unreferenced
+notAfter=Jan  1 00:00:00 2020 GMT
+subject=CN = unused.example.com
+
+#HOPLINE-END

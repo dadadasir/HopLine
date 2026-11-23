@@ -1,0 +1,140 @@
+name: Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      include_x64:
+        description: Also build macOS x64 (disable for a smaller test run)
+        type: boolean
+        default: true
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-13 已退役，macos-14 将于 2026-11-02 退役；在 arm64 上交叉打 x64，并在 windows-latest 原生打 Windows x64。
+        include: ${{ fromJSON(github.event_name == 'push' &&
+          '[{"os":"macos-15","platform":"mac","arch":"arm64"}]' ||
+          github.event_name == 'workflow_dispatch' && !inputs.include_x64 &&
+          '[{"os":"macos-15","platform":"mac","arch":"arm64"},{"os":"windows-latest","platform":"win","arch":"x64"},{"os":"ubuntu-latest","platform":"linux","arch":"x64"}]' ||
+          '[{"os":"macos-15","platform":"mac","arch":"arm64"},{"os":"macos-15","platform":"mac","arch":"x64"},{"os":"windows-latest","platform":"win","arch":"x64"},{"os":"ubuntu-latest","platform":"linux","arch":"x64"}]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120  # 首次公证可能排队较久
+    env:
+      EDITION: community
+      # 只使用显式提供的证书；无凭据由 mac-signing.cjs 使用整包临时签名。
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Validate release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node - <<'NODE'
+          const { version } = require('./package.json')
+          const expected = `v${version}`
+          if (process.env.RELEASE_TAG !== expected) {
+            console.error(`标签与 package.json 版本不一致：应为 ${expected}。`)
+            process.exit(1)
+          }
+          NODE
+      - run: sudo apt-get update && sudo apt-get install -y build-essential python3
+        if: runner.os == 'Linux'
+      - run: npm ci
+      - run: npx install-electron  # Electron ≥ 45 不再在安装时自动下载二进制
+      - name: Build package (never publish)
+        shell: bash
+        env:
+          CSC_LINK: ${{ runner.os == 'macOS' && secrets.MAC_CSC_LINK || '' }}
+          CSC_KEY_PASSWORD: ${{ runner.os == 'macOS' && secrets.MAC_CSC_KEY_PASSWORD || '' }}
+          APPLE_ID: ${{ runner.os == 'macOS' && secrets.APPLE_ID || '' }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+          APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_TEAM_ID || '' }}
+        run: npm run "build:$EDITION" -- -- --${{ matrix.platform }} --${{ matrix.arch }} --publish never
+      - name: Check packaged Windows SSH key parsing
+        if: runner.os == 'Windows'
+        run: npm run test:win-asar
+      - run: npm run perf:budget
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hopline-${{ env.EDITION }}-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            release/*.zip
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: error
+          retention-days: 14
+
+  draft-release:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    concurrency:
+      group: draft-release-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: hopline-community-*
+          path: artifacts
+          merge-multiple: true
+      - name: Prepare checksums and draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          export LC_ALL=C
+          shopt -s nullglob
+          notes="$GITHUB_WORKSPACE/docs/release-notes-0.4.0.md"
+          if [[ ! -f "$notes" || -L "$notes" ]]; then
+            echo '::error::缺少发行说明 / Release notes must be a regular file.'
+            exit 1
+          fi
+          cd artifacts
+          assets=(*.zip *.exe *.AppImage *.deb)
+          if (( ${#assets[@]} == 0 )); then
+            echo '::error::没有可发布的安装包 / No package artifacts found.'
+            exit 1
+          fi
+          for asset in "${assets[@]}"; do
+            if [[ ! -f "$asset" || -L "$asset" ]]; then
+              echo '::error::产物必须是普通文件 / Artifacts must be regular files.'
+              exit 1
+            fi
+          done
+          sha256sum -- "${assets[@]}" > SHA256SUMS.txt
+          sha256sum --check SHA256SUMS.txt
+          if draft=$(gh release view "$RELEASE_TAG" --repo "$GH_REPO" --json isDraft --jq '.isDraft'); then
+            if [[ "$draft" != true ]]; then
+              echo '::error::该版本已公开，拒绝修改 / Release is already public; refusing to modify it.'
+              exit 1
+            fi
+          else
+            gh release create "$RELEASE_TAG" --repo "$GH_REPO" --verify-tag --draft --title "$RELEASE_TAG" --notes-file "$notes"
+          fi
+          # Re-check before attachment; never turn an existing public release into a draft.
+          [[ $(gh release view "$RELEASE_TAG" --repo "$GH_REPO" --json isDraft --jq '.isDraft') == true ]]
+          gh release upload "$RELEASE_TAG" --repo "$GH_REPO" --clobber -- "${assets[@]}" SHA256SUMS.txt

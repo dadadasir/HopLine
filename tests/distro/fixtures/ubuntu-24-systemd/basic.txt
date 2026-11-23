@@ -1,0 +1,26 @@
+===HOPLINE:os-release===
+NAME="Ubuntu 24.04 LTS"
+ID=ubuntu
+VERSION_ID="24.04"
+PRETTY_NAME="Ubuntu 24.04 LTS"
+===HOPLINE:uname===
+Linux ubuntu-24-systemd.example.test 6.1.0-demo #1 SMP x86_64 GNU/Linux
+===HOPLINE:id===
+uid=1001(demo) gid=1001(demo) groups=1001(demo)
+===HOPLINE:df===
+Filesystem       1024-blocks    Used Available Capacity Mounted on
+/dev/sda1 2000000 1000000 1000000 50% /srv/demo
+tmpfs 65536 0 65536 0% /dev
+===HOPLINE:memory===
+             total used free shared buff/cache available
+Mem: 4000000 500000 2500000 0 1000000 3000000
+Swap: 100000 0 100000
+===HOPLINE:loadavg===
+0.10 0.20 0.30 1/14 42
+===HOPLINE:listeners===
+LISTEN 0 128 127.0.0.1:22 0.0.0.0:* users:(("sshd",pid=12,fd=3))
+LISTEN 0 128 [::]:443 [::]:*
+===HOPLINE:ps===
+PID USER %CPU COMMAND COMMAND
+1 root 0.0 systemd /usr/sbin/systemd
+15 demo 0.0 ps ps -A

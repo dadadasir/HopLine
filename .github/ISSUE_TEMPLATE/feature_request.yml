@@ -1,0 +1,37 @@
+name: Feature request
+description: Propose an improvement to VPS management or SSH essentials.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read the [non-goals](https://github.com/dadadasir/HopLine/blob/main/CONTRIBUTING.md#non-goals) first.
+        Describe the server-management problem or missing SSH essential. English and Chinese are welcome.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Product scope
+      options:
+        - label: I read the non-goals and checked existing issues for this request.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Who encounters this, in what situation, and what makes the current workflow difficult? Use fictional examples.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain how this helps users understand/manage servers or improves an SSH essential. Include any required server installation or network service.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and workarounds
+      description: What have you tried, and why is it insufficient?
+    validations:
+      required: true

@@ -1,0 +1,94 @@
+{
+  "collectedAt": 1793059200000,
+  "os": {
+    "status": "complete",
+    "data": {
+      "id": "alpine",
+      "version": "3.20.10",
+      "name": "Alpine Linux",
+      "kernel": "Linux 6.1.0-demo",
+      "architecture": "aarch64"
+    }
+  },
+  "uptime": {
+    "status": "complete",
+    "data": {
+      "seconds": 120.5
+    }
+  },
+  "cpu": {
+    "status": "complete",
+    "data": {
+      "cores": 2,
+      "usagePercent": 50
+    }
+  },
+  "memory": {
+    "status": "partial",
+    "data": {
+      "totalBytes": 4096000000,
+      "availableBytes": 3072000000,
+      "swapTotalBytes": 102400000,
+      "swapUsedBytes": 25600000
+    },
+    "note": "MemAvailable missing; estimated from MemFree+Buffers+Cached"
+  },
+  "load": {
+    "status": "complete",
+    "data": {
+      "one": 0.1,
+      "five": 0.2,
+      "fifteen": 0.3
+    }
+  },
+  "disk": {
+    "status": "complete",
+    "data": [
+      {
+        "filesystem": "/dev/vda1",
+        "mountpoint": "/etc/hosts",
+        "totalBytes": 1024000000,
+        "usedBytes": 102400000,
+        "availableBytes": 921600000,
+        "usagePercent": 10
+      }
+    ]
+  },
+  "listeners": {
+    "status": "partial",
+    "data": [
+      {
+        "protocol": "tcp",
+        "address": "0.0.0.0",
+        "port": 22,
+        "process": null
+      },
+      {
+        "protocol": "tcp6",
+        "address": "::",
+        "port": 443,
+        "process": "nginx"
+      }
+    ],
+    "note": "Process names are not visible"
+  },
+  "docker": {
+    "status": "unavailable",
+    "reason": "not-installed",
+    "note": "docker"
+  },
+  "services": {
+    "status": "unavailable",
+    "reason": "not-applicable",
+    "note": "systemd"
+  },
+  "web": {
+    "status": "unavailable",
+    "reason": "not-installed",
+    "note": "nginx and caddy"
+  },
+  "certs": {
+    "status": "complete",
+    "data": []
+  }
+}

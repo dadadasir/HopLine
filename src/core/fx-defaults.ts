@@ -1,0 +1,7 @@
+import type { FxSnapshot } from '../shared/fx'
+
+/** ECB reference rates supplied for the offline baseline; all quotes are per EUR. */
+export const DEFAULT_FX: FxSnapshot = {
+  date: '2026-11-18', base: 'EUR', source: 'ecb', fetchedAt: 0,
+  rates: { AUD:1.6294, BRL:6.3818, CAD:1.569, CHF:0.9243, CNY:7.3126, CZK:24.386, DKK:7.4744, EUR:1, GBP:0.8329, HKD:8.6063, HUF:368.4, IDR:20020.71, ILS:3.5798, INR:102.4905, ISK:137, JPY:174.85, KRW:1461.3, MXN:20.3738, MYR:4.5144, NOK:10.6045, NZD:1.9951, PHP:69.832, PLN:4.4118, RON:5.3467, SEK:11.143, SGD:1.4144, THB:37.264, TRY:55.3197, USD:1.0968, ZAR:18.8897 }
+}

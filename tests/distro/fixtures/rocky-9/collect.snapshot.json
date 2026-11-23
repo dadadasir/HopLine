@@ -1,0 +1,93 @@
+{
+  "collectedAt": 1793059200000,
+  "os": {
+    "status": "complete",
+    "data": {
+      "id": "rocky",
+      "version": "9.8",
+      "name": "Rocky Linux",
+      "kernel": "Linux 6.1.0-demo",
+      "architecture": "x86_64"
+    }
+  },
+  "uptime": {
+    "status": "complete",
+    "data": {
+      "seconds": 120.5
+    }
+  },
+  "cpu": {
+    "status": "complete",
+    "data": {
+      "cores": 2,
+      "usagePercent": 50
+    }
+  },
+  "memory": {
+    "status": "complete",
+    "data": {
+      "totalBytes": 4096000000,
+      "availableBytes": 3072000000,
+      "swapTotalBytes": 102400000,
+      "swapUsedBytes": 25600000
+    }
+  },
+  "load": {
+    "status": "complete",
+    "data": {
+      "one": 0.1,
+      "five": 0.2,
+      "fifteen": 0.3
+    }
+  },
+  "disk": {
+    "status": "complete",
+    "data": [
+      {
+        "filesystem": "/dev/sda1",
+        "mountpoint": "/srv/demo",
+        "totalBytes": 2048000000,
+        "usedBytes": 1024000000,
+        "availableBytes": 1024000000,
+        "usagePercent": 50
+      }
+    ]
+  },
+  "listeners": {
+    "status": "partial",
+    "data": [
+      {
+        "protocol": "tcp",
+        "address": "127.0.0.1",
+        "port": 22,
+        "process": "sshd"
+      },
+      {
+        "protocol": "tcp6",
+        "address": "::",
+        "port": 443,
+        "process": null
+      }
+    ],
+    "note": "Process names are not visible"
+  },
+  "docker": {
+    "status": "unavailable",
+    "reason": "not-installed",
+    "note": "docker"
+  },
+  "services": {
+    "status": "unavailable",
+    "reason": "not-applicable",
+    "note": "systemd"
+  },
+  "web": {
+    "status": "unavailable",
+    "reason": "not-installed",
+    "note": "nginx and caddy"
+  },
+  "certs": {
+    "status": "complete",
+    "data": []
+  }
+}

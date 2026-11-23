@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+    paths-ignore: ['docs/**', '**/*.md']
+  pull_request:
+    paths-ignore: ['docs/**', '**/*.md']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: sudo apt-get update && sudo apt-get install -y build-essential python3
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test -- --no-cache --configLoader runner
+
+  test-windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npx vitest run --no-cache --configLoader runner tests/windows-support.test.ts tests/ssh-config.test.ts tests/ssh-config-import.test.ts tests/ci-scripts.test.ts tests/perf-slim-vitest.test.ts
+
+  smoke:
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: sudo apt-get update && sudo apt-get install -y build-essential python3 xvfb libgtk-3-0 libnss3 libasound2t64
+      - run: npm ci
+      - run: npx install-electron  # Electron ≥ 45 不再在安装时自动下载二进制
+      # Ubuntu 的 AppArmor 限制未配置 profile 的 user namespace；仅关闭临时 runner 上的此限制。
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: xvfb-run -a npm run test:smoke
+      - name: Runtime performance budget
+        run: |
+          npm run build:unpack
+          xvfb-run -a npm run perf:runtime

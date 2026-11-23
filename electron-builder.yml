@@ -1,0 +1,105 @@
+appId: app.hopline.desktop
+extends: ./scripts/mac-signing.cjs
+productName: Hopline
+artifactName: "${productName}-${version}-${env.HOPLINE_EDITION}-${os}-${arch}.${ext}"
+copyright: Copyright © 2026 Hopline
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**/*
+  - package.json
+  # 以下依赖已完全打包进 out/renderer 或 out/main，或仅为原生编译头文件与调试符号，运行时无需进入 app.asar。
+  - "!node_modules/@fontsource{,/**}"
+  - "!node_modules/@floating-ui{,/**}"
+  - "!node_modules/@radix-ui{,/**}"
+  - "!node_modules/@xterm{,/**}"
+  - "!node_modules/aria-hidden{,/**}"
+  - "!node_modules/chokidar{,/**}"
+  - "!node_modules/detect-node-es{,/**}"
+  - "!node_modules/get-nonce{,/**}"
+  - "!node_modules/lucide-react{,/**}"
+  - "!node_modules/nan{,/**}"
+  - "!node_modules/node-addon-api{,/**}"
+  - "!node_modules/react{,/**}"
+  - "!node_modules/react-dom{,/**}"
+  - "!node_modules/react-remove-scroll{,/**}"
+  - "!node_modules/react-remove-scroll-bar{,/**}"
+  - "!node_modules/react-style-singleton{,/**}"
+  - "!node_modules/readdirp{,/**}"
+  - "!node_modules/scheduler{,/**}"
+  - "!node_modules/tslib{,/**}"
+  - "!node_modules/use-callback-ref{,/**}"
+  - "!node_modules/use-sidecar{,/**}"
+  - "!node_modules/**/*.d.ts"
+  - "!node_modules/**/*.d.mts"
+  - "!node_modules/**/*.map"
+  - "!node_modules/**/*.pdb"
+  - "!node_modules/cpu-features/{deps,src,test}{,/**}"
+  - "!node_modules/node-pty/{deps,src,scripts,third_party,node-addon-api}{,/**}"
+  - "!node_modules/node-pty/lib/*.test.js"
+asar: true
+asarUnpack:
+  - "**/*.node"
+  - "**/spawn-helper"
+npmRebuild: true
+afterPack: scripts/after-pack.cjs
+electronLanguages:
+  - zh_CN
+  - en
+mac:
+  icon: build/mac/icon.icns
+  category: public.app-category.developer-tools
+  files:
+    - out/**/*
+    - package.json
+    - "!node_modules/node-pty/prebuilds/win32-*{,/**}"
+    - "!node_modules/ssh2/util/pagent.exe"
+  target:
+    - target: zip
+      arch:
+        - arm64
+  # 签名/公证由 mac-signing.cjs 按完整环境变量启用；无凭据使用整包临时签名。
+win:
+  icon: build/win/icon.ico
+  files:
+    - out/**/*
+    - package.json
+    - "!node_modules/node-pty/prebuilds/darwin-*{,/**}"
+    - "!node_modules/node-pty/prebuilds/win32-arm64{,/**}"
+    - "!node_modules/node-pty/build{,/**}"
+    - "!node_modules/cpu-features/build{,/**}"
+  asarUnpack:
+    - "**/*.node"
+    - "**/node_modules/node-pty/**"
+    - "**/node_modules/ssh2/util/pagent.exe"
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Hopline
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Development
+  maintainer: Hopline
+  files:
+    - out/**/*
+    - package.json
+    - "!node_modules/node-pty/prebuilds/win32-*{,/**}"
+    - "!node_modules/node-pty/prebuilds/darwin-*{,/**}"
+    - "!node_modules/ssh2/util/pagent.exe"
+  # 图标由 scripts/generate-linux-icons.cjs 生成。
+  icon: build/linux/icons
+  synopsis: 简洁的跨平台 SSH 终端
+  description: 本地优先的 SSH 终端，支持多主机连接、SFTP 文件传输和加密备份。

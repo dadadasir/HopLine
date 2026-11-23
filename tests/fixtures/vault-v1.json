@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "groups": [{ "id": "group-v1", "name": "旧分组", "sortOrder": 1 }],
+  "hosts": [{
+    "id": "host-v1",
+    "groupId": "group-v1",
+    "name": "旧主机",
+    "host": "legacy.test",
+    "port": 22,
+    "username": "root",
+    "authType": "password",
+    "passwordEnc": "mem:bGVnYWN5LXNlY3JldA",
+    "privateKeyEnc": null,
+    "privateKeyPath": null,
+    "passphraseEnc": null,
+    "proxy": null,
+    "jump": null,
+    "startupCommand": null,
+    "createdAt": 1000,
+    "updatedAt": 2000
+  }],
+  "settings": { "language": "zh", "theme": "dark", "fontSize": 16 }
+}

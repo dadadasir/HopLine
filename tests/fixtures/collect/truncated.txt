@@ -1,0 +1,6 @@
+===HOPLINE:uptime===
+42.50 80.00
+
+#HOPLINE-END
+===HOPLINE:docker===
+{"Names":"app","Image":"app:latest","Status":"Up

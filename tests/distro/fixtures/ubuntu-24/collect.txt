@@ -1,0 +1,59 @@
+===HOPLINE:os===
+NAME="Ubuntu 24.04 LTS"
+ID=ubuntu
+VERSION_ID="24.04"
+PRETTY_NAME="Ubuntu 24.04 LTS"
+Linux 6.1.0-demo aarch64
+
+#HOPLINE-END
+===HOPLINE:uptime===
+120.50 200.00
+
+#HOPLINE-END
+===HOPLINE:cpu===
+cores 2
+cpu 100 0 50 300 0 0 0 0
+cpu 130 0 70 350 0 0 0 0
+
+#HOPLINE-END
+===HOPLINE:memory===
+MemTotal: 4000000 kB
+MemAvailable: 3000000 kB
+SwapTotal: 100000 kB
+SwapFree: 75000 kB
+
+#HOPLINE-END
+===HOPLINE:load===
+0.10 0.20 0.30 1/14 42
+
+#HOPLINE-END
+===HOPLINE:disk===
+Filesystem       1024-blocks    Used Available Capacity Mounted on
+/dev/sda1 2000000 1000000 1000000 50% /srv/demo
+tmpfs 65536 0 65536 0% /dev
+#HOPLINE-MOUNTS
+/dev/sda1 /srv/demo ext4 rw 0 0
+tmpfs /dev tmpfs rw 0 0
+
+#HOPLINE-END
+===HOPLINE:listeners===
+LISTEN 0 128 127.0.0.1:22 0.0.0.0:* users:(("sshd",pid=12,fd=3))
+LISTEN 0 128 [::]:443 [::]:*
+
+#HOPLINE-END
+===HOPLINE:docker===
+#HOPLINE-UNAVAILABLE not-installed docker
+
+#HOPLINE-END
+===HOPLINE:services===
+#HOPLINE-UNAVAILABLE not-applicable systemd
+
+#HOPLINE-END
+===HOPLINE:web===
+#HOPLINE-UNAVAILABLE not-installed nginx and caddy
+
+#HOPLINE-END
+===HOPLINE:certs===
+
+
+#HOPLINE-END

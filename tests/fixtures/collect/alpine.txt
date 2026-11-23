@@ -1,0 +1,71 @@
+===HOPLINE:os===
+NAME="Alpine Linux"
+ID=alpine
+VERSION_ID=3.20.10
+PRETTY_NAME="Alpine Linux v3.20"
+Linux 6.1.0-demo aarch64
+
+#HOPLINE-END
+===HOPLINE:uptime===
+12345.67 20000.00
+
+#HOPLINE-END
+===HOPLINE:cpu===
+cores 4
+cpu 100 0 100 700 100 0 0 0 0 0
+cpu 120 0 110 740 110 0 0 20 0 0
+
+#HOPLINE-END
+===HOPLINE:memory===
+MemTotal:       8192 kB
+MemFree:        1024 kB
+Buffers:        1024 kB
+Cached:         2048 kB
+SwapTotal:      4096 kB
+SwapFree:       3072 kB
+
+#HOPLINE-END
+===HOPLINE:load===
+0.09 0.20 0.18 1/14 42
+
+#HOPLINE-END
+===HOPLINE:disk===
+Filesystem           1024-blocks    Used Available Capacity Mounted on
+overlay              1000000     100000    900000  10% /
+tmpfs                    65536         0     65536   0% /dev
+shm                      65536         0     65536   0% /dev/shm
+/dev/vda1            1000000     100000    900000  10% /etc/hosts
+/dev/loop0                 100       100         0 100% /snap/core
+nfs.example.test:/volume            200       100       100  50% /data\040files
+#HOPLINE-MOUNTS
+overlay / overlay rw 0 0
+tmpfs /dev tmpfs rw 0 0
+shm /dev/shm tmpfs rw 0 0
+/dev/vda1 /etc/hosts ext4 rw 0 0
+/dev/loop0 /snap/core squashfs ro 0 0
+nfs.example.test:/volume /data\040files nfs rw 0 0
+
+#HOPLINE-END
+===HOPLINE:listeners===
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::443                  :::*                    LISTEN      12/nginx
+
+#HOPLINE-END
+===HOPLINE:docker===
+#HOPLINE-UNAVAILABLE permission-denied permission denied while trying to connect to the Docker daemon socket
+
+#HOPLINE-END
+===HOPLINE:services===
+#HOPLINE-UNAVAILABLE not-applicable PID 1 is not systemd
+
+#HOPLINE-END
+===HOPLINE:web===
+#HOPLINE-UNAVAILABLE not-installed nginx and caddy configuration
+
+#HOPLINE-END
+===HOPLINE:certs===
+#HOPLINE-UNAVAILABLE permission-denied /etc/letsencrypt/live
+
+#HOPLINE-END

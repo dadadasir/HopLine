@@ -1,0 +1,52 @@
+===HOPLINE:os===
+NAME="Debian GNU/Linux"
+ID=debian
+VERSION_ID="12"
+PRETTY_NAME="Debian GNU/Linux"
+Linux 6.1.0-demo x86_64
+
+#HOPLINE-END
+===HOPLINE:sshd===
+#HOPLINE-SOURCE effective
+port 22
+permitrootlogin yes
+passwordauthentication yes
+permitemptypasswords no
+
+#HOPLINE-END
+===HOPLINE:firewall===
+#HOPLINE-SOURCE none
+
+#HOPLINE-END
+===HOPLINE:listeners===
+LISTEN 0 128 127.0.0.1:22 0.0.0.0:* users:(("sshd",pid=12,fd=3))
+LISTEN 0 128 [::]:443 [::]:*
+
+#HOPLINE-END
+===HOPLINE:updates===
+#HOPLINE-SOURCE apt
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+pending-complete=yes
+auto=no
+reboot=no
+
+#HOPLINE-END
+===HOPLINE:bruteforce===
+active=no
+
+#HOPLINE-END
+===HOPLINE:accounts===
+uid0=root
+shadow=permission-denied
+
+#HOPLINE-END
+===HOPLINE:processes===
+PID USER %CPU COMMAND COMMAND
+1 root 0.0 sshd /usr/sbin/sshd
+15 demo 0.0 ps ps -A
+
+#HOPLINE-END
+===HOPLINE:tls===
+#HOPLINE-UNAVAILABLE not-installed openssl
+
+#HOPLINE-END

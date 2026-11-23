@@ -1,0 +1,45 @@
+===HOPLINE:listeners===
+LISTEN 0 128 0.0.0.0:22 0.0.0.0:*
+LISTEN 0 511 [::]:443 [::]:* users:(("nginx",pid=12,fd=7))
+
+#HOPLINE-END
+===HOPLINE:docker===
+{"Names":"app","Image":"app:latest","Status":"Up 2 hours (healthy)","Ports":"0.0.0.0:8080->80/tcp"}
+
+#HOPLINE-END
+===HOPLINE:services===
+nginx.service loaded active running A high performance web server
+ssh.service loaded active running OpenBSD Secure Shell server
+
+#HOPLINE-END
+===HOPLINE:web===
+#HOPLINE-SOURCE nginx
+server {
+  # server_name ignored.example;
+  server_name example.com
+      www.example.com;
+}
+server { server_name example.com _; }
+#HOPLINE-SOURCE caddy
+{
+  email admin@example.com
+}
+(reusable) {
+  respond "Hello"
+}
+https://caddy.example.com, http://other.example.com:8080 {
+  reverse_proxy localhost:3000
+}
+first.example.com,
+second.example.com {
+  respond "Hi"
+}
+
+#HOPLINE-END
+===HOPLINE:certs===
+notAfter=Nov 27 10:20:30 2026 GMT
+subject=CN = example.com
+notAfter=Jan  2 03:04:05 2027 GMT
+subject=C = US, O = Example, CN = caddy.example.com
+
+#HOPLINE-END
