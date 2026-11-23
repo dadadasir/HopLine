@@ -127,9 +127,9 @@ function fixture(rootName = 'docker data') {
       printf '%s\\000' "$opened" >> ${shellEscape(path.join(directory, 'truncated.ids'))}
     `)
   }
-  const run = (phase: 'check' | 'apply', extra: Record<string, string> = {}) => {
+  const run = (phase: 'check' | 'apply', extra: Record<string, string> = {}, sh = '/bin/sh') => {
     prepare()
-    const result = spawnSync('/bin/sh', ['-c', source(phase)], { encoding: 'utf8', env: { PATH: bin, ...extra }, timeout: 15_000 })
+    const result = spawnSync(sh, ['-c', source(phase)], { encoding: 'utf8', env: { PATH: bin, ...extra }, timeout: 15_000 })
     if (result.error) throw result.error
     return { code: result.status, stdout: result.stdout, stderr: result.stderr }
   }
@@ -206,10 +206,12 @@ it.each(['check', 'apply'] as const)('rejects a file replaced between stat and d
   expect(fs.statSync(`${log}.saved`).size).toBe(11); expect(f.events('truncate-attempts')).toEqual([])
 })
 
-it.each(['check', 'apply'] as const)('rejects a container directory replaced after descriptor open during %s', (phase) => {
+// Debian/Ubuntu run `sh -s` with dash, whose pwd -P reports the cached path after the directory moves.
+const shells = ['/bin/sh', ...(fs.existsSync('/bin/dash') ? ['/bin/dash'] : [])]
+it.each(shells.flatMap(sh => (['check', 'apply'] as const).map(phase => [phase, sh] as const)))('rejects a container directory replaced after descriptor open during %s (%s)', (phase, sh) => {
   const f = fixture(), log = f.json(id('a'), 11), protectedFile = f.file(`home/user/${id('a')}-json.log`, Buffer.alloc(89))
   f.configure([{ id: id('a'), driver: 'json-file' }])
-  const result = f.run(phase, { REPLACE_PARENT: path.dirname(log), REPLACEMENT_TARGET: path.dirname(protectedFile) })
+  const result = f.run(phase, { REPLACE_PARENT: path.dirname(log), REPLACEMENT_TARGET: path.dirname(protectedFile) }, sh)
   expect(result.code, result.stderr).toBe(20)
   expect(fs.statSync(protectedFile).size).toBe(89)
   expect(fs.statSync(path.join(`${path.dirname(log)}.saved`, path.basename(log))).size).toBe(11)

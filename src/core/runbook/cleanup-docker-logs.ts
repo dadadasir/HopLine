@@ -37,7 +37,9 @@ if [ -n "$ids" ]; then
       (journald) journal_count=$((journal_count + 1)); continue ;;
       (*) other_count=$((other_count + 1)); continue ;;
     esac
+    # dash caches pwd -P from the last cd; also check the absolute path itself.
     [ "$(pwd -P)" = "$container_root" ] && [ "$(stat -c '%d:%i' .)" = "$container_identity" ] || exit 20
+    [ ! -L "$container_root" ] && [ "$(stat -c '%d:%i' "$container_root")" = "$container_identity" ] || exit 20
     [ -d "./$id" ] && [ ! -L "./$id" ] || exit 20
     cd -P "./$id" || exit 20
     expected_dir="$container_root/$id"
@@ -61,6 +63,7 @@ if [ -n "$ids" ]; then
       size=$(stat -Lc %s /proc/self/fd/3) || exit 20
       case "$size" in (''|*[!0-9]*) exit 20 ;; esac
       [ "$(pwd -P)" = "$expected_dir" ] && [ "$(stat -c '%d:%i' .)" = "$directory_identity" ] || exit 20
+      [ ! -L "$expected_dir" ] && [ "$(stat -c '%d:%i' "$expected_dir")" = "$directory_identity" ] || exit 20
       [ "$(stat -c '%d:%i' "$docker_root")" = "$root_identity" ] && [ ! -L "$docker_root" ] || exit 20
       [ ! -L "./$name" ] && [ "$(stat -c '%d:%i:%h' "./$name")" = "$identity" ] || exit 20
       ${apply ? 'truncate -s 0 -- /proc/self/fd/3 || exit 20' : `sizes="$sizes$size

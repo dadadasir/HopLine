@@ -35,7 +35,8 @@ function words(line: string): string[] {
 export function parseSshConfig(entry: string, readFile: SshConfigReader, home: string): SshConfigPreview {
   const warnings = new Set<string>(), aliases = new Set<string>()
   const winHome = isWindowsPath(home)
-  const paths = winHome ? path.win32 : path
+  // A POSIX home must not be resolved by the host's path module (win32 on Windows).
+  const paths = winHome ? path.win32 : path.posix
   const expand = (value: string) => {
     const replaced = value.replace(/%d/g, home).replace(/%USERPROFILE%/gi, home)
     if (replaced === '~') return home
