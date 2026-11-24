@@ -297,13 +297,17 @@ function Workspace() {
   const hostViews = route.page === 'host' ? { ...visitedHosts, [route.hostId]: route.section } : visitedHosts
   const host = route.page === 'host' ? state.hosts.find(host => host.id === route.hostId) : null
   const extensionTitle = useExtensionPageTitle(route.page === 'extension' ? route.id : undefined)
-  const title = route.page === 'extension' ? extensionTitle : route.page === 'host' ? host?.name ?? (en ? 'Host unavailable' : '主机已删除') : ({ overview: t('overview.title'), billing: en ? 'Billing overview' : '计费总览', sessions: en ? 'Sessions' : '会话', activity: en ? 'Activity' : '活动', settings: t('settings.title'), help: en ? 'Help' : '帮助' })[route.page]
+  const title = route.page === 'extension' ? extensionTitle
+    : route.page === 'host' ? (host ? '' : (en ? 'Host unavailable' : '主机已删除'))
+    : route.page === 'sessions' ? (en ? 'Sessions' : '会话')
+    : route.page === 'help' ? (en ? 'Help' : '帮助')
+    : ''
   return <div className="flex h-full bg-panel text-ink">
     {!state.sidebarCollapsed && <Sidebar />}
     <main className="flex min-w-0 flex-1 flex-col">
       <header className={`app-drag flex h-12 shrink-0 items-center gap-3 border-b border-line px-4 ${window.hopline.platform === 'darwin' && state.sidebarCollapsed ? 'pl-[78px]' : ''}`}>
         {state.sidebarCollapsed && <IconButton label={en ? 'Expand sidebar' : '展开侧栏'} onClick={toggleSidebar}><PanelLeft className="h-4 w-4" /></IconButton>}
-        <h1 className="min-w-0 truncate text-[14px] font-semibold">{title}</h1>
+        {title && <h1 className="min-w-0 truncate text-[14px] font-semibold">{title}</h1>}
         <div className="no-drag ml-auto flex min-w-0 items-center gap-2">
           {!sessions && state.tabs.length > 0 && <button type="button" className="max-w-40 truncate rounded-md border border-line px-2 py-1 text-[12px] text-muted" onClick={() => openSessions()}>{en ? 'Sessions' : '会话'} · {state.tabs.length}</button>}
           {sessions && <QuietButton onClick={() => void openLocal()}>{en ? '+ Local terminal' : '+ 本地终端'}</QuietButton>}
@@ -466,7 +470,7 @@ function Empty() {
     <div className="grid h-full place-items-center px-8 text-center">
       <div>
         <Mark className="mx-auto h-12 w-12" />
-        <h1 className="mt-4 text-[22px] font-medium tracking-tight">Hopline</h1>
+        <h1 className="mt-4 text-[22px] font-medium tracking-tight">HopLine</h1>
         <p className="mx-auto mt-2 max-w-sm text-[13px] leading-6 text-muted">{t('app.tagline')}</p>
         <p className="mt-1 text-[13px] text-muted">{t('empty.body')}</p>
         <div className="mt-5 flex justify-center gap-2">
@@ -662,7 +666,7 @@ function About() {
       <div className="flex gap-3">
         <Mark className="h-10 w-10" />
         <div>
-          <div className="text-[15px] font-medium">Hopline</div>
+          <div className="text-[15px] font-medium">HopLine</div>
           <div className="text-[12px] text-muted">{info?.version} · Electron {info?.electron}</div>
           <div className="text-[12px] text-muted">{t(`about.edition.${info?.edition ?? __HOPLINE_EDITION__}`)}</div>
           <p className="mt-3 text-[13px] leading-6 text-muted">{t('about.body')}</p>

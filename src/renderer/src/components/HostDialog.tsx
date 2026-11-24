@@ -1,6 +1,6 @@
 import { parseSshAddress, recognizeHostText, type RecognizedConnection } from '../../../core/host-recognition'
 import { PasswordInput } from './PasswordInput'
-import { useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { ArrowUp, ArrowDown, ChevronRight, Trash2 } from 'lucide-react'
 import type { AuthType, ForwardRule, HostPublic, JumpPublic, ProxyType } from '@shared/types'
 import { api, connectHost, errorText, patch, toast } from '../state'
@@ -20,17 +20,32 @@ const agentSockets = {
 export function HostDialog() {
   const mode = useAppSelector((state) => state.hostDialog)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const formId = useId()
   const t = useT()
+  useEffect(() => { setError('') }, [mode])
   if (!mode) return null
   const host = typeof mode === 'object' ? mode : null
+  const footer = (
+    <div>
+      {error && <p role="alert" className="mb-2.5 text-[12px]" style={{ color: 'var(--risk-fg)' }}>{error}</p>}
+      <div className="flex justify-end gap-2">
+        <QuietButton onClick={() => { if (!saving) patch({ hostDialog: false }) }}>{t('host.cancel')}</QuietButton>
+        {host ? <PrimaryButton type="submit" form={formId} disabled={saving}>{saving ? t('host.saving') : t('host.save')}</PrimaryButton> : <>
+          <QuietButton type="submit" form={formId} disabled={saving}>{t('host.save')}</QuietButton>
+          <PrimaryButton type="submit" form={formId} value="connect" disabled={saving}>{saving ? t('host.saving') : t('host.saveAndConnect')}</PrimaryButton>
+        </>}
+      </div>
+    </div>
+  )
   return (
-    <Modal open title={host ? t('host.editTitle') : t('host.new')} onClose={() => { if (!saving) patch({ hostDialog: false }) }} placement="drawer">
-      <HostForm key={host?.id ?? (mode === 'recognize' ? 'recognize' : 'new')} host={host} recognize={mode === 'recognize'} onBusy={setSaving} />
+    <Modal open title={host ? t('host.editTitle') : t('host.new')} onClose={() => { if (!saving) patch({ hostDialog: false }) }} placement="drawer" footer={footer}>
+      <HostForm key={host?.id ?? (mode === 'recognize' ? 'recognize' : 'new')} formId={formId} host={host} recognize={mode === 'recognize'} onBusy={setSaving} onError={setError} />
     </Modal>
   )
 }
 
-function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recognize: boolean; onBusy: (busy: boolean) => void }) {
+function HostForm({ formId, host, recognize, onBusy, onError }: { formId: string; host: HostPublic | null; recognize: boolean; onBusy: (busy: boolean) => void; onError: (message: string) => void }) {
   const t = useT()
   const groups = useAppSelector((state) => state.groups)
   const [persistent, setPersistent] = useState(host?.persistent ?? false)
@@ -77,16 +92,15 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
   const [forwards, setForwards] = useState<ForwardRule[]>(host?.forwards ?? [])
   const [forwardsOpen, setForwardsOpen] = useState(Boolean(host?.forwards?.length))
   const updateForward = (id: string, change: Partial<ForwardRule>) => setForwards(forwards.map((rule) => rule.id === id ? { ...rule, ...change } : rule))
-  const [error, setError] = useState('')
   const zh = useAppSelector((state) => state.settings?.language !== 'en')
   const [advanced, setAdvanced] = useState(Boolean(host && (host.persistent || host.proxy || host.jumps.length || host.forwards.length || host.startupCommand || host.connectionTimeoutSec != null || host.keepaliveIntervalSec != null)))
   const advancedSummary = [connectionTimeout.trim() && t('host.connectionTimeout'), keepaliveInterval.trim() && t('host.keepaliveInterval'), persistent && (zh ? '持久会话' : 'Persistent'), useProxy && t('host.proxy'), jumps.length > 0 && t('host.jump'), forwards.length > 0 && t('forward.title'), startup.trim() && t('host.startup')].filter(Boolean).join(' · ')
 
   const save = async (connect: boolean) => {
     if (submitting.current) return
-    setError('')
+    onError('')
     if (groupId === '__new__' && groups.some((group) => group.name === newGroupName.trim())) {
-      setError(t('host.groupExists'))
+      onError(t('host.groupExists'))
       return
     }
     submitting.current = true
@@ -140,7 +154,7 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
       toast(t('toast.saved'))
       if (connect) void connectHost(saved)
     } catch (err) {
-      setError(t(errorText(err)))
+      onError(t(errorText(err)))
       if (isLockedError(err)) toast(MASTER_PASSWORD_REQUIRED, 'err', {
         duration: 0,
         action: { label: t('backup.openSettings'), run: async () => { patch({ settingsOpen: 'backup' }) } }
@@ -154,6 +168,7 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
 
   return (
     <form
+      id={formId}
       className="space-y-4"
       onSubmit={(event) => {
         event.preventDefault()
@@ -169,7 +184,7 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
         <div className="mt-4 flex justify-end gap-2"><QuietButton onClick={() => { const result = recognizeHostText(sourceText); setRecognized(result); setCandidate(result.length === 1 ? 0 : null); setRecognitionError(result.length ? '' : t('credentials.noAddress')) }}>{t('credentials.recognize')}</QuietButton><PrimaryButton disabled={candidate === null || !recognized[candidate]} onClick={() => { fillConnection(recognized[candidate!]!); setRecognizing(false); setSourceText(''); setRecognized([]) }}>{t('credentials.apply')}</PrimaryButton></div>
       </Modal>
       <div className="grid grid-cols-2 gap-3">
-        <Field label={t('host.name')}><TextInput maxLength={80} value={name} onChange={(event) => setName(event.target.value)} autoFocus /></Field>
+        <Field label={t('host.name')}><TextInput maxLength={80} value={name} placeholder={t('host.namePlaceholder')} onChange={(event) => setName(event.target.value)} autoFocus /></Field>
         <Field label={t('host.group')}>
           <select value={groupId} onChange={(event) => setGroupId(event.target.value)} className="h-9 w-full px-2 text-[13px]">
             <option value="">{t('sidebar.ungrouped')}</option>
@@ -179,9 +194,6 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
             <option value="__new__">+ {t('sidebar.group')}</option>
           </select>
         </Field>
-        <div className="col-span-2"><Field label={t('overview.note')}>
-          <textarea rows={2} maxLength={2000} className="w-full px-2 py-1.5 text-[13px]" value={note} onChange={(event) => setNote(event.target.value)} />
-        </Field></div>
         <Field label={t('host.address')}><TextInput required maxLength={255} value={address} onChange={(event) => setAddress(event.target.value)} onPaste={event => { if (host) return; const value = event.clipboardData.getData('text'); if (!/^ssh\s|@|^\[.+\]:\d+$|^[^:]+:\d+$/.test(value.trim())) return; const parsed = parseSshAddress(value); if (parsed) { event.preventDefault(); fillConnection(parsed) } }} spellCheck={false} /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label={t('host.port')}><TextInput required type="number" min={1} max={65535} value={port} onChange={(event) => setPort(event.target.value)} /></Field>
@@ -262,6 +274,9 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
           </Field>
         </div>
       )}
+      <Field label={t('overview.note')}>
+        <textarea rows={2} maxLength={2000} className="w-full px-2 py-1.5 text-[13px]" value={note} onChange={(event) => setNote(event.target.value)} />
+      </Field>
       <button type="button" aria-expanded={advanced} onClick={() => setAdvanced(!advanced)} className="flex w-full items-center gap-2 border-t border-line pt-4 text-left text-[13px]">
         <ChevronRight className={`h-3.5 w-3.5 text-muted transition-transform ${advanced ? 'rotate-90' : ''}`} />
         <span className="font-medium">{zh ? '高级设置' : 'Advanced'}</span>
@@ -282,24 +297,21 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
         <label className="flex items-center gap-2 text-[13px]"><input type="checkbox" checked={persistent} onChange={(event) => setPersistent(event.target.checked)} />{t('persistent.default')}</label>
         <p className="mt-1 text-[12px] leading-5 text-muted">{t('host.persistentHint')}</p>
       </div>
-      <Disclosure title={t('host.proxy')} hint={zh ? '本机无法直连服务器时，先经过一个 SOCKS5 或 HTTP 代理节点再连接。' : 'Reach the server through a SOCKS5 or HTTP proxy when it cannot be reached directly.'} open={useProxy} onToggle={setUseProxy}>
+      <Disclosure title={t('host.proxy')} open={useProxy} onToggle={setUseProxy}>
         <div className="grid grid-cols-2 gap-3">
           <div className="inline-flex h-9 items-center rounded-lg border border-line p-0.5">
             <button type="button" className={`h-7 rounded-md px-2 text-[12px] ${proxyType === 'socks5' ? 'bg-accent-soft text-accent' : ''}`} onClick={() => setProxyType('socks5')}>{t('host.proxySocks')}</button>
             <button type="button" className={`h-7 rounded-md px-2 text-[12px] ${proxyType === 'http' ? 'bg-accent-soft text-accent' : ''}`} onClick={() => setProxyType('http')}>{t('host.proxyHttp')}</button>
           </div>
           <Field label={t('host.port')}><TextInput value={proxyPort} onChange={(event) => setProxyPort(event.target.value)} /></Field>
-          <div className="col-span-2"><Field label={t('overview.note')}>
-          <textarea rows={2} maxLength={2000} className="w-full px-2 py-1.5 text-[13px]" value={note} onChange={(event) => setNote(event.target.value)} />
-        </Field></div>
-        <Field label={t('host.address')}><TextInput value={proxyHost} onChange={(event) => setProxyHost(event.target.value)} /></Field>
+          <Field label={t('host.address')}><TextInput value={proxyHost} onChange={(event) => setProxyHost(event.target.value)} /></Field>
           <Field label={t('host.user')}><TextInput value={proxyUser} onChange={(event) => setProxyUser(event.target.value)} /></Field>
           <Field label={t('host.password')}>
             <PasswordInput secretLabel={t('host.proxyPassword')} value={proxyPassword} saved={host?.proxy?.hasPassword ? { hostId: host.id, field: 'proxyPassword' } : undefined} onDraftChange={setProxyPassword} autoComplete="off" />
           </Field>
         </div>
       </Disclosure>
-      <Disclosure title={t('host.jump')} hint={zh ? '先 SSH 登录一台中转服务器，再从它连到目标主机，常用于只对内网开放的机器。' : 'Log in to an intermediate server over SSH first, then connect onward. Common for machines only reachable from a private network.'} open={jumps.length > 0} onToggle={(open) => setJumps(open ? [jumpDraft()] : [])}>
+      <Disclosure title={t('host.jump')} hint={zh ? '经中转服务器连接内网主机。' : 'Connect through one or more jump hosts.'} open={jumps.length > 0} onToggle={(open) => setJumps(open ? [jumpDraft()] : [])}>
         <div className="space-y-3">
           {jumps.map((jump, index) => {
             const saved = host?.jumps[index]
@@ -318,7 +330,7 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
             className="h-9 rounded-lg px-3 text-[13px] text-muted hover:bg-black/5 disabled:opacity-50">{t('host.addJump')}</button>
         </div>
       </Disclosure>
-      <Disclosure title={t('forward.title')} hint={zh ? '借这条 SSH 连接打一条隧道，例如把服务器上只监听 127.0.0.1 的数据库或后台映射到本机端口访问。' : 'Tunnel ports over this SSH connection, for example to reach a database or dashboard that only listens on the server’s 127.0.0.1.'} open={forwardsOpen} onToggle={setForwardsOpen}>
+      <Disclosure title={t('forward.title')} hint={zh ? '通过这条 SSH 连接映射本机或远端端口。' : 'Tunnel local or remote ports over this SSH connection.'} open={forwardsOpen} onToggle={setForwardsOpen}>
         <div className="space-y-3">
           {forwards.map((rule) => <div key={rule.id} className="space-y-2 rounded-lg border border-line p-3">
             <div className="flex items-center justify-between gap-2">
@@ -345,14 +357,6 @@ function HostForm({ host, recognize, onBusy }: { host: HostPublic | null; recogn
       <Field label={t('host.startup')}>
         <TextInput value={startup} onChange={(event) => setStartup(event.target.value)} spellCheck={false} />
       </Field>
-      </div>
-      {error && <p role="alert" className="text-[12px]" style={{ color: 'var(--risk-fg)' }}>{error}</p>}
-      <div className="flex justify-end gap-2 pt-1">
-        <QuietButton onClick={() => { if (!submitting.current) patch({ hostDialog: false }) }}>{t('host.cancel')}</QuietButton>
-        {host ? <PrimaryButton type="submit" disabled={saving}>{saving ? t('host.saving') : t('host.save')}</PrimaryButton> : <>
-          <QuietButton type="submit" disabled={saving}>{t('host.save')}</QuietButton>
-          <PrimaryButton type="submit" value="connect" disabled={saving}>{saving ? t('host.saving') : t('host.saveAndConnect')}</PrimaryButton>
-        </>}
       </div>
     </form>
   )

@@ -217,7 +217,7 @@ try {
   assert.equal(await main.evaluate(aliveTrays), 1)
   const initialMenu = await main.evaluate(menuItems)
   assert.deepEqual(initialMenu.filter(item => item.type !== 'separator').map(item => item.label), [
-    '上次采集状态 · 托盘不自动采集', '缓存主机 · CPU 17% · 磁盘 93%', '上次失败主机 · 上次检查失败', '未采集主机 · 尚未采集', '打开主窗口', '退出'
+    '上次采集状态 · 托盘不自动采集', '缓存主机 · CPU 17% · 磁盘 93%', '上次失败主机 · 上次检查失败', '未采集主机 · 未采集', '打开主窗口', '退出'
   ])
   assert.ok(initialMenu.slice(0, 4).every(item => !item.enabled), 'Cached rows must be read-only')
   assert.doesNotMatch(JSON.stringify(initialMenu), /127\.0\.0\.1|tray-fixture-user|tray-smoke-temporary-password|fixture-only failure evidence/)

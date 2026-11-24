@@ -5,6 +5,7 @@ import { api, errorText, getState, patch } from './store'
 export interface ConfirmState {
   title: string
   body: string
+  details?: { label: string; body: string }
   confirm: string
   danger?: boolean
   run: () => Promise<void>

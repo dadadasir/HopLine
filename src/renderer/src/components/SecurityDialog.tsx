@@ -42,18 +42,27 @@ export function SecurityPanel({ hostId }: { hostId: string }) {
   }
   const check = () => { const value = sudo ? password : undefined; setPassword(''); setShare(false); void run(() => api().security.check(hostId, { sudoPassword: value })) }
   const rows = (status: SecurityResult['status'] | 'hints') => securityRows(report?.results ?? [], status)
-  const failed = rows('fail'), levels = (['high', 'medium', 'low'] as const).map((level) => ({ level, count: failed.filter((r) => r.severity === level).length }))
+  const failed = rows('fail'), unknownCount = rows('unknown').length, ignoredCount = rows('ignored').length, passedCount = rows('pass').length
+  const levels = (['high', 'medium', 'low'] as const).map((level) => ({ level, count: failed.filter((r) => r.severity === level).length }))
+  const ignored = ignoredCount ? (zh ? ` · 已忽略 ${ignoredCount} 项` : ` · ${ignoredCount} ignored`) : ''
+  const reportHeading = failed.length
+    ? (zh ? `发现 ${failed.length} 个问题` : `${failed.length} ${failed.length === 1 ? 'issue' : 'issues'} found`)
+    : !passedCount
+      ? (unknownCount ? (zh ? '无法确认' : 'Could not verify') : (zh ? '无通过结果' : 'No passing results')) + ignored
+      : unknownCount ? (zh ? '已检项通过' : 'Checked items passed') + ignored
+      : ignoredCount ? (zh ? '通过' : 'Passed') + ignored
+      : (zh ? '全部通过' : 'All passed')
   return <div className="space-y-5 text-[13px]">
       {report && <section className="grid-dots flex flex-wrap items-center gap-6 rounded-xl border border-line bg-panel p-5">
         <Ring value={report.score} tone={scoreTone(report.score)} size={104} stroke={9} label={`${zh ? '安全评分' : 'Security score'} ${report.score}/100`}><span><span className="font-mono text-[26px] font-medium leading-none" style={{ color: toneColor[scoreTone(report.score)] }}>{report.score}</span><span className="block font-mono text-[10px] text-muted">/100</span></span></Ring>
         <div className="min-w-0 flex-1">
           <p className="eyebrow">{zh ? '安全评分' : 'Security score'}</p>
-          <h2 className="mt-1 text-lg font-semibold">{failed.length ? zh ? `发现 ${failed.length} 个问题` : `${failed.length} issues found` : zh ? '没有发现已知问题' : 'No known issues found'}</h2>
+          <h2 className="mt-1 text-lg font-semibold">{reportHeading}</h2>
           <div className="mt-3 flex flex-wrap gap-2">{levels.map(({ level, count }) => <span key={level} className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs" style={count ? { color: `var(--${level === 'high' ? 'risk' : level === 'medium' ? 'warn' : 'unknown'}-fg)`, background: `var(--${level === 'high' ? 'risk' : level === 'medium' ? 'warn' : 'unknown'}-bg)` } : { color: 'var(--muted)', border: '1px solid var(--line)' }}>{t(`security.${level}`)}<span className="font-mono">{count}</span></span>)}</div>
           <p className="mt-3 font-mono text-[11px] text-muted">{localDateTime(report.snapshot.collectedAt)}</p>
         </div>
       </section>}
-      {!report && <div className="rounded-lg border border-line bg-canvas p-4"><h2 className="font-medium">{zh ? '尚无安全检查结果' : 'No security report yet'}</h2><p className="mt-1 text-muted">{zh ? '安全检查通过 SSH 读取配置，不会修改服务器。运行检查后，可查看问题和修复方法。' : 'Security checks read server configuration over SSH and change nothing. Run a check to review findings and how to fix them.'}</p></div>}
+      {!report && <div className="rounded-lg border border-line bg-canvas p-4"><h2 className="font-medium">{zh ? '未检查' : 'Not checked'}</h2><p className="mt-1 text-muted">{zh ? '只读检查 SSH、防火墙、更新与证书，不改动服务器。' : 'Read-only check of SSH, firewall, updates, and certificates. Changes nothing on the server.'}</p></div>}
       <div className="flex flex-wrap gap-2"><PrimaryButton disabled={busy || !host} onClick={() => { setSudo(false); setPassword(''); void run(() => api().security.check(hostId)) }}>{t(busy ? 'runbook.checking' : report ? 'security.recheck' : 'security.startCheck')}</PrimaryButton><QuietButton disabled={busy || !host} onClick={() => setSudo(true)}>{t(report ? 'security.sudo' : 'security.startSudo')}</QuietButton>{report && <QuietButton disabled={busy} onClick={() => setShare(!share)}>{t('security.share')}</QuietButton>}</div>
       {sudo && <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); check() }}><PasswordInput secretLabel={t('runbook.password')} autoComplete="off" aria-label={t('runbook.password')} placeholder={t('runbook.password')} value={password} onChange={(e) => setPassword(e.target.value)} /><PrimaryButton type="submit" disabled={busy}>{t('runbook.check')}</PrimaryButton></form>}
       {error && <p role="alert" className="text-red-600">{t(error)}</p>}
@@ -61,10 +70,10 @@ export function SecurityPanel({ hostId }: { hostId: string }) {
       {report && (['fail', 'hints', 'unknown', 'pass', 'ignored'] as const).map((status) => rows(status).length === 0 && status !== 'fail' ? null : <details key={status} open={status === 'fail' || status === 'unknown'} className="group">
         <summary className="flex cursor-pointer list-none items-center gap-2 py-1 text-sm font-semibold"><span className="text-muted transition-transform group-open:rotate-90">›</span>{t(`security.${status}`)}<span className="font-mono font-normal text-muted">{rows(status).length}</span></summary>
         {status === 'unknown' && rows(status).length > 0 && <p className="mt-1 text-xs text-muted">{t('security.more')}</p>}
-        {status === 'fail' && rows(status).length === 0 && <p className="mt-2 text-muted">{zh ? '已检查的项目里没有发现问题。' : 'No issues were found in the items checked.'}</p>}
+        {status === 'fail' && rows(status).length === 0 && <p className="mt-2 text-muted">{zh ? '未发现已知问题' : 'No known issues'}</p>}
         <div className={status === 'pass' ? 'mt-2 divide-y divide-line rounded-xl border border-line' : 'mt-2 space-y-2.5'}>{rows(status).map((r) => <SecurityRow key={`${r.id}:${r.status}`} result={r} compact={status === 'pass'} note={report?.ignores[r.id]?.note} busy={busy} onIgnore={(note) => void run(() => note === null ? api().security.unignore(hostId, r.id) : api().security.ignore(hostId, r.id, note))} onCopy={(text) => void run(async () => { await api().clipboard.write(text); toast(zh ? '命令已复制' : 'Commands copied'); return null })} />)}</div>
       </details>)}
-      <p className="text-xs leading-5 text-muted">{t('security.runbook')}</p>
+      {report && <p className="text-xs leading-5 text-muted">{t('security.runbook')}</p>}
     </div>
 }
 function SecurityRow({ result: r, note, busy, compact, onIgnore, onCopy }: { result: SecurityResult; note?: string; busy: boolean; compact?: boolean; onIgnore: (note: string | null) => void; onCopy: (text: string) => void }) {

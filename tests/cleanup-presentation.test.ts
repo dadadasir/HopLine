@@ -23,7 +23,7 @@ it('bulk selection excludes unknown, unsupported and empty items without weakeni
   expect(html).toContain('aria-checked="mixed"')
   expect(html).toMatch(/aria-label="旧临时文件"[^>]*disabled/)
   expect(html).toContain('无法估算')
-  expect(html).toContain('另有 2 项没有可清理的内容')
+  expect(html).toContain('另有 2 项无可清理')
   expect(html).not.toContain('已满足')
 })
 it('results sum actual selected measurements including partial releases, not estimates or mount deltas', () => {

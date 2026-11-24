@@ -73,18 +73,21 @@ export function PrimaryButton({
   onClick,
   type = 'button',
   value,
+  form,
   disabled
 }: {
   children: ReactNode
   onClick?: () => void
   type?: 'button' | 'submit'
   value?: string
+  form?: string
   disabled?: boolean
 }) {
   return (
     <button
       type={type}
       value={value}
+      form={form}
       disabled={disabled}
       onClick={onClick}
       className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap h-9 rounded-lg bg-accent px-3.5 text-[13px] font-medium text-accent-ink transition hover:brightness-110 disabled:opacity-50"
@@ -99,16 +102,18 @@ export function QuietButton({
   onClick,
   type = 'button',
   value,
+  form,
   disabled
 }: {
   children: ReactNode
   onClick?: () => void
   type?: 'button' | 'submit'
   value?: string
+  form?: string
   disabled?: boolean
 }) {
   return (
-    <button type={type} value={value} disabled={disabled} onClick={onClick} className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap h-9 rounded-lg px-3 text-[13px] disabled:opacity-50 text-muted hover:bg-black/5 hover:text-ink dark:hover:bg-white/8">
+    <button type={type} value={value} form={form} disabled={disabled} onClick={onClick} className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap h-9 rounded-lg px-3 text-[13px] disabled:opacity-50 text-muted hover:bg-black/5 hover:text-ink dark:hover:bg-white/8">
       {children}
     </button>
   )
@@ -153,7 +158,7 @@ export function Modal({
         event.stopImmediatePropagation()
         close.current()
       } else if (event.key === 'Tab') {
-        const targets = Array.from(element?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex="0"]') ?? []).filter((item) => item.getClientRects().length > 0)
+        const targets = Array.from(element?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, a[href], [tabindex="0"]') ?? []).filter((item) => item.getClientRects().length > 0)
         const first = targets[0], last = targets.at(-1)
         if (!first || (event.shiftKey && document.activeElement === first) || (!event.shiftKey && document.activeElement === last)) {
           event.preventDefault()
@@ -222,10 +227,17 @@ export function ConfirmDialog() {
   return (
     <Modal open title={confirm.title} onClose={() => closeConfirm()} width="w-[420px]">
       <p className="text-[13px] leading-6 text-muted">{confirm.body}</p>
+      {confirm.details && (
+        <details className="mt-3 rounded-lg border border-line bg-canvas px-3 py-2 text-[12px] text-muted">
+          <summary className="cursor-pointer select-none font-medium text-muted hover:text-ink">{confirm.details.label}</summary>
+          <p className="mt-2 leading-5">{confirm.details.body}</p>
+        </details>
+      )}
       <div className="mt-5 flex justify-end gap-2">
         <QuietButton onClick={() => closeConfirm()}>{t('confirm.cancel')}</QuietButton>
         <button
           type="button"
+          data-confirm-danger={confirm.danger || undefined}
           className={`h-9 rounded-lg px-3.5 text-[13px] font-medium ${confirm.danger ? 'bg-red-600 text-white' : 'bg-accent text-accent-ink'}`}
           onClick={() => void runConfirm(confirm)}
         >

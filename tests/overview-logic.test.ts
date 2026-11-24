@@ -35,11 +35,15 @@ describe('overview display logic', () => {
     const counts = cardCounts(s, now, 'zh')
     expect(counts[0]).toMatchObject({ text: '容器（无权限）', note: '权限不足 · sudo required' })
     expect(counts[1]).toMatchObject({ text: '服务 0', note: '部分数据不可用 · truncated' })
-    expect(cardCounts(null, now, 'zh').every((row) => row.text.endsWith('—') && row.note === '尚未采集')).toBe(true)
+    expect(cardCounts(null, now, 'zh').every((row) => row.text.endsWith('—') && row.note === '未采集')).toBe(true)
     expect(sectionNote({ status: 'unavailable', reason: 'not-installed' }, 'en')).toBe('Not installed')
   })
-  it.each([[null, '尚未采集'], [now, '0 分钟前更新'], [now - 59_999, '0 分钟前更新'], [now - 60_000, '1 分钟前更新'], [now - 3_600_000, '60 分钟前更新'], [now + day, '0 分钟前更新']] as const)('formats update time %s', (timestamp, expected) => {
+  it.each([[null, '未采集'], [now, '刚刚更新'], [now - 59_999, '刚刚更新'], [now - 60_000, '1 分钟前更新'], [now - 3_600_000, '60 分钟前更新'], [now + day, '刚刚更新']] as const)('formats update time %s', (timestamp, expected) => {
     expect(updatedAgo(timestamp, now, 'zh')).toBe(expected)
+  })
+  it('uses the immediate update label in English for the first minute', () => {
+    expect(updatedAgo(now - 59_999, now, 'en')).toBe('Just now')
+    expect(updatedAgo(now - 60_000, now, 'en')).toBe('Updated 1 minute ago')
   })
   it('uses each currency default decimals while keeping integer-price /100 units', () => {
     expect(money(451, 'EUR', 'en')).toBe('€4.51')

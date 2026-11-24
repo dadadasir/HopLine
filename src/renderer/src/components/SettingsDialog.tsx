@@ -87,7 +87,7 @@ function Appearance() {
           <input type="checkbox" checked={settings.backgroundStay} onChange={event => void update({ backgroundStay: event.target.checked })} />
           {settings.language === 'en' ? 'Keep running in the menu bar / tray after closing the window' : '关闭窗口后常驻菜单栏／托盘'}
         </label>
-        <p className="mt-2 text-[12px] leading-5 text-muted">{settings.language === 'en' ? 'The tray shows cached host status. It does not collect data or send reminders by itself. Quit from its menu to exit the app.' : '托盘显示已有的主机状态，本身不采集或发送提醒。要完全退出应用，请在托盘菜单中选择“退出”。'}</p>
+        <p className="mt-2 text-[12px] leading-5 text-muted">{settings.language === 'en' ? 'Tray shows cached status only; does not collect data or send reminders. Quit from the tray menu to exit.' : '托盘仅展示已有状态，不后台采集或发提醒；完全退出请在托盘菜单点「退出」。'}</p>
       </div>
       <UpdateSettings />
       <section className="space-y-3 border-t border-line pt-4" data-collection-settings aria-label={t('collection.settings')}>
@@ -188,16 +188,21 @@ function Backup() {
   }
 
   return (
-    <div className="scroll-thin max-h-[460px] space-y-4 overflow-y-auto pr-1">
+    <div className="space-y-4">
       <p className="text-[12px] leading-5 text-muted">{t('backup.intro')}</p>
       <label className="flex items-center gap-2 text-[13px]"><input data-verify-secrets type="checkbox" checked={settings?.verifySecrets ?? true} onChange={event => void update({ verifySecrets: event.target.checked }).catch(error => toast(t(runbookError(error)), 'err'))} />{t('credentials.verifySetting')}</label>
 
-      <div data-backup-scope className="space-y-2 rounded-lg border border-line p-3 text-[12px] leading-5 text-muted">
-        <p className="font-medium text-text">{t('backup.scopeTitle')}</p>
-        <p>{t('backup.scopeIncluded')}</p>
-        <p>{t('backup.scopeExcluded')}</p>
-        <p>{t('backup.scopeFiles')}</p>
-      </div>
+      <details data-backup-scope className="rounded-lg border border-line p-3 text-[12px] leading-5 text-muted">
+        <summary className="cursor-pointer font-medium text-ink">
+          {t('backup.scopeTitle')}
+          <span className="ml-2 font-normal text-muted">{t('backup.scopeSummary')}</span>
+        </summary>
+        <div className="mt-2 space-y-2 border-t border-line pt-2">
+          <p>{t('backup.scopeIncluded')}</p>
+          <p>{t('backup.scopeExcluded')}</p>
+          <p>{t('backup.scopeFiles')}</p>
+        </div>
+      </details>
       {settings && !settings.keystore && <p className="text-[12px] text-amber-700 dark:text-amber-300">{t('backup.keystoreOff')}</p>}
       <div className="grid grid-cols-2 gap-3">
         <Field label={t('backup.password')}>

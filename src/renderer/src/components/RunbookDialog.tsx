@@ -58,7 +58,7 @@ export function RunbookSteps({ book, plan, results, selected, setSelected, disab
   const t = useT()
   return <>{plan.steps.map((step) => {
         const definition = book.steps.find((item) => item.id === step.id)!, result = results[step.id]
-        return <section key={step.id} className={`space-y-2 rounded border p-3 ${definition.dangerous ? 'border-red-500 text-red-600 dark:text-red-300' : 'border-line'}`}>
+        return <section key={step.id} style={definition.dangerous ? { borderColor: 'color-mix(in srgb, var(--risk-fg) 45%, var(--line))', color: 'var(--risk-fg)' } : undefined} className="space-y-2 rounded border border-line p-3">
           <label className="flex items-center gap-2"><input type="checkbox" disabled={disabled || step.status !== 'needed'} checked={selected.includes(step.id)} onChange={(event) => setSelected(event.target.checked ? [...selected, step.id] : selected.filter((id) => id !== step.id))} />
             <strong>{t(definition.title)}</strong><span className="rounded bg-accent-soft px-2 text-[12px]">{t(`runbook.${result?.status ?? step.status}`)}</span></label>
           {definition.description && <p>{t(definition.description)}</p>}

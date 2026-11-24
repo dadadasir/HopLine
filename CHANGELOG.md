@@ -2,7 +2,7 @@
 
 Notable user-facing changes are recorded here, using [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories.
 
-## [0.4.0] - 2026-11-19
+## [0.4.0] - 2026-11-23
 
 首次公开发布仅提供 **macOS Apple Silicon（arm64）ZIP 安装包**。安装包已使用 Developer ID 签名并经 Apple 公证。下载 ZIP，按[发行说明](docs/release-notes-0.4.0.md#sha-256-校验)校验 SHA-256，解压后将 HopLine 拖入「应用程序」并打开。
 
@@ -22,6 +22,7 @@ Notable user-facing changes are recorded here, using [Keep a Changelog](https://
 - 新建主机可留空名称并直接保存连接，首次连接后自动读取状态，再选择运行安全体检或跳过。
 - 窗口可见时，按列表顺序自动采集前五台主机。总览每分钟更新，其他页面默认每五分钟更新，可在外观设置中关闭或调整。需要认证时显示「连接并确认」，连接失败后延迟重试。所有主机仍可从详情页手动刷新。
 - 减少启动时加载的界面，首次打开终端时按需加载终端组件。新增 HopLine 应用图标。
+- 总览按主机归并待处理问题，可展开和收起。标题与统计卡区分需要处理、待更新、待确认和未自动采集的主机，安全体检单独标出已忽略和未检查的项目。界面文案更简短。
 
 ### 修复
 
@@ -40,6 +41,7 @@ Notable user-facing changes are recorded here, using [Keep a Changelog](https://
 - WebDAV 上传和下载支持取消与超时，并限制目录列表和备份大小。设置中可查看备份范围。
 - 状态过期、权限不足或采集失败时，显示待确认和具体原因。兼容旧 yum 系统的只读安全更新查询。
 - 改进连接确认、错误恢复和清理取消反馈。输入提交失败后可继续使用键盘重试。
+- 修复编辑连接时备注框重复、抽屉底部按钮随内容滚动、主机卡底部信息被截断等问题。
 
 ### Release scope
 
@@ -61,6 +63,7 @@ The first time you open HopLine after upgrading from 0.3.x, macOS may request ac
 - Leave the name blank to use the host address, or select **Save and connect** to open the connection immediately. HopLine collects status after the first connection and offers a security check.
 - While the window is visible, HopLine collects the first five hosts in list order. It checks every minute in Overview and every five minutes elsewhere by default. Change or disable automatic collection in Appearance settings. Hosts needing authentication offer **Connect and confirm**, and failed connections retry with increasing delays. All hosts support manual refresh.
 - Reduced startup loading and load terminal components when first needed. Added the HopLine app icon.
+- Overview groups open issues by host, with expandable and collapsible lists. Headings and stat cards distinguish issues, pending updates, unconfirmed hosts and hosts beyond automatic collection; security checks list ignored and unchecked items separately. Interface copy is shorter.
 
 ### Fixed
 
@@ -79,6 +82,7 @@ The first time you open HopLine after upgrading from 0.3.x, macOS may request ac
 - WebDAV uploads and downloads support cancellation, timeouts, directory-listing and backup-size limits. Settings describe the backup scope.
 - Stale status, missing permissions and failed collection show an unconfirmed state and a specific reason. Read-only security-update queries support older yum systems.
 - Improved connection confirmation, error recovery and cleanup cancellation feedback. Keyboard submission can be retried after failure.
+- Fixed a duplicated note field in the connection editor, drawer footer buttons scrolling with content, and truncated host-card footers.
 
 ## [0.3.0] - 2026-10-27
 

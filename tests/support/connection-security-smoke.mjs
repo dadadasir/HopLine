@@ -93,5 +93,36 @@ export async function securityPageSmoke(context, report) {
     await evaluate("document.querySelector('section[aria-label] article').scrollIntoView({block:'start'})")
     await capture(context, `security-finding-${theme}-${locale}`)
   }
+  // Use a separate report per assertion, going through the real panel's latest-report IPC.
+  const rules = report.results.filter(row => row.id !== 'ssh-default-port').slice(0, 3)
+  const rulesModule = '/@fs' + path.resolve(import.meta.dirname, '../../src/core/security/rules.ts')
+  for (const [locale, cases] of [
+    ['zh', [
+      [['pass'], '全部通过'], [['pass', 'ignored'], '通过 · 已忽略 1 项'],
+      [['pass', 'unknown'], '已检项通过'], [['pass', 'unknown', 'ignored'], '已检项通过 · 已忽略 1 项'],
+      [['unknown'], '无法确认'], [['ignored'], '无通过结果 · 已忽略 1 项'],
+      [['fail', 'unknown', 'ignored'], '发现 1 个问题']
+    ]],
+    ['en', [
+      [['pass'], 'All passed'], [['pass', 'ignored'], 'Passed · 1 ignored'],
+      [['pass', 'unknown'], 'Checked items passed'], [['pass', 'unknown', 'ignored'], 'Checked items passed · 1 ignored'],
+      [['unknown'], 'Could not verify'], [['ignored'], 'No passing results · 1 ignored'],
+      [['fail', 'unknown', 'ignored'], '1 issue found']
+    ]]
+  ]) {
+    await evaluate(`await hopline.settings.update({language:'${locale}'});await testState.reloadCatalog()`)
+    for (const [statuses, title] of cases) {
+      const results = statuses.map((status, index) => ({...rules[index], status}))
+      const score = await evaluate(`(await import(${JSON.stringify(rulesModule)})).securityScore(${JSON.stringify(results)})`)
+      await main.evaluate(`testElectron.ipcMain.removeHandler('security:latest');testElectron.ipcMain.handle('security:latest',()=>(${JSON.stringify({...report, results, score})}));undefined`)
+      await evaluate("testNav.openHost(fileHost.id,'status')")
+      await waitFor("testState.getState().route.section==='status'")
+      await evaluate("testNav.openHost(fileHost.id,'security')")
+      await waitFor(`!!Array.from(document.querySelectorAll('h2')).find(el=>el.textContent===${JSON.stringify(title)} && el.getClientRects().length)`)
+      if (statuses.length === 3 && statuses[0] === 'pass') await capture(context, `security-coverage-${locale}`)
+    }
+  }
+  await main.evaluate(`testElectron.ipcMain.removeHandler('security:latest');testElectron.ipcMain.handle('security:latest',()=>(${JSON.stringify(report)}));undefined`)
+  console.log('PASS bilingual security headings for passed, ignored, unknown, mixed coverage and failure')
   console.log('PASS M4-B security page has no raw-data disclosure in both languages, preserves reports, and copies exact commands without executing')
 }

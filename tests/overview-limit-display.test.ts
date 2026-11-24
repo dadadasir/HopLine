@@ -48,8 +48,9 @@ it('limits health and notices to the first five but includes all costs and renew
   const html = render(hosts, snapshots)
   expect(tile(html, '运行正常')).toBe('4/5')
   expect(tile(html, '需要处理')).toBe('—')
-  expect(html).toContain('1 台待更新，点全部刷新')
-  expect(html).toContain('状态未确认，不能判断')
+  expect(html).toContain('1 台待更新')
+  expect(html).toContain('待确认')
+  expect(html).toContain('另 3 台未自动采集')
   expect(tile(html, '每月费用')).toBe('¥533.38')
   expect(html).toContain('$80.00')
   expect(tile(html, '15 天内续费')).toBe('3')
@@ -93,6 +94,9 @@ it('provides complete English limited-overview copy', () => {
   const html = render(hosts, records(), 'en')
   expect(html).toContain('Overview automatically updates the first 5 hosts.')
   expect(html).not.toContain('overview.limitExplanation')
+  expect(html).toContain('First 5 OK')
+  expect(html).toContain('3 not auto-collected')
+  expect(html).not.toContain('All good')
   expect(tile(html, 'Healthy')).toBe('5/5')
   expect(tile(html, 'Renewals in 15 days')).toBe('3')
 })
@@ -102,29 +106,53 @@ it.each(['missing', 'stale', 'failed'] as const)('does not present %s observatio
   if (kind === 'missing') delete snapshots[host.id]
   else if (kind === 'stale') snapshots[host.id].updatedAt = now - 11 * 60_000
   else if (kind === 'failed') snapshots[host.id].error = 'offline'
-  else snapshots[host.id].snapshot!.cpu = { status: 'unavailable', reason: 'permission-denied' }
   for (const locale of ['zh', 'en'] as const) {
     const html = render([host], snapshots, locale)
     expect(tile(html, locale === 'zh' ? '需要处理' : 'Needs attention')).toBe('—')
-    expect(html).toContain(locale === 'zh' ? '1 台待更新，点全部刷新' : '1 host to update. Select Refresh all.')
+    expect(html).toContain(locale === 'zh' ? '1 台待更新' : '1 host to update')
     expect(html).toContain('data-overview-unknown')
-    expect(html).not.toContain('已采集的状态暂无已知问题')
+    expect(html).not.toContain(locale === 'zh' ? '一切正常' : 'All good')
   }
 })
 
 it('keeps known risk actionable while disclosing unknown hosts', () => {
   const snapshots = records(); delete snapshots[hosts[0].id]
   const html = render([hosts[0], hosts[7]], snapshots)
+  expect(html).toMatch(/<h1[^>]*>需要处理<\/h1>/)
   expect(tile(html, '需要处理')).toBe('1')
-  expect(html).toContain('1 台待更新，点全部刷新')
+  expect(html).toContain('1 台待确认')
+  expect(html).toContain('data-overview-unknown="1"')
   expect(html).toContain('磁盘使用率过高')
 })
 
 it('separates an empty catalog from collected status with no issues', () => {
   expect(render([])).toContain('添加第一台主机')
-  expect(render([])).not.toContain('暂无已知问题')
+  expect(render([])).not.toContain('一切正常')
   const healthy = render([hosts[0]])
-  expect(healthy).toContain('已采集的状态暂无已知问题')
+  expect(healthy).toContain('一切正常')
   expect(tile(healthy, '需要处理')).toBe('0')
   expect(healthy).not.toContain('data-overview-unknown')
+  const limitedHealthy = render(hosts, records(), 'zh')
+  expect(limitedHealthy).toContain('前 5 台正常')
+  expect(limitedHealthy).toContain('另 3 台未自动采集')
+  expect(limitedHealthy).not.toContain('一切正常')
+})
+
+it.each(['zh', 'en'] as const)('discloses incomplete fresh data without presenting it as stale or healthy (%s)', locale => {
+  const snapshots = records(), host = hosts[0]
+  snapshots[host.id].snapshot!.cpu = { status: 'unavailable', reason: 'permission-denied' }
+  const html = render([host], snapshots, locale)
+  expect(html).toMatch(locale === 'zh' ? /<h1[^>]*>待确认<\/h1>/ : /<h1[^>]*>Needs checking<\/h1>/)
+  expect(tile(html, locale === 'zh' ? '运行正常' : 'Healthy')).toBe('0/1')
+  expect(tile(html, locale === 'zh' ? '需要处理' : 'Needs attention')).toBe('—')
+  expect(html).toContain(locale === 'zh' ? '1 台待确认' : '1 need checking')
+  expect(html).not.toMatch(/一切正常|All good|台待更新|hosts? to update/)
+})
+
+it('omits extra lines for zero issues, monthly cost and renewals', () => {
+  const host = { ...hosts[0], meta: { ...hosts[0].meta, price: 0 } }
+  const html = render([host])
+  expect(html).toMatch(/>需要处理<\/p><p[^>]*>0<\/p><\/div>/)
+  expect(html).toMatch(/>每月费用<\/p><p[^>]*>¥0\.00<\/p><\/button>/)
+  expect(html).toMatch(/>15 天内续费<\/p><p[^>]*>0<\/p><\/div>/)
 })

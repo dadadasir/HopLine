@@ -38,7 +38,8 @@ export async function overviewLimitSmoke({ browser, main, evaluate, waitFor, cli
         assert.equal(await main.evaluate(`testElectron.nativeImage.createFromPath(${JSON.stringify(reference)}).toBitmap().equals(testElectron.nativeImage.createFromPath(${JSON.stringify(regionPath)}).toBitmap())`), true, `Unchanged overview pixels: ${name}`)
       }
     }
-    console.log(`CAPTURE M4-A 1024x700 ${name}: ${location}`)
+    const size = await evaluate('innerWidth + "x" + innerHeight')
+    console.log(`CAPTURE M4-A ${size} ${name}: ${location}`)
   }
   for (const count of [1, 5]) for (const theme of ['light', 'dark']) {
     await evaluate(`await hopline.settings.update({language:'zh',theme:${JSON.stringify(theme)}});await testState.reloadCatalog();testNav.navigate({page:'sessions'});
@@ -79,11 +80,52 @@ export async function overviewLimitSmoke({ browser, main, evaluate, waitFor, cli
     await evaluate("document.querySelector('[data-overview-limit-note]').scrollIntoView({block:'end'})")
     await capture('8-dark-limited-en')
 
+    for (const [width, height, theme] of [[1024, 700, 'light'], [1440, 900, 'dark']]) {
+      await main.evaluate(`testElectron.BrowserWindow.getAllWindows()[0].setContentSize(${width},${height})`)
+      await arrange(8, theme)
+      await evaluate(`(() => {
+        const state = testState.getState(), [host, pending] = state.hosts
+        const snapshot = structuredClone(m4Record.snapshot)
+        snapshot.disk.data[0].usagePercent = 94
+        snapshot.load.data = {one: 4.25, five: 3.2, fifteen: 2.1}
+        snapshot.uptime.data.seconds = 12300
+        snapshot.docker = {status:'complete', data:Array.from({length:6}, (_, i) => ({id:String(i),name:'fixture-'+i,image:'fixture',status:'running',ports:''}))}
+        const hosts = [{...host, meta:{...host.meta, renewAt:m4Now+86400000}}, ...state.hosts.slice(1)]
+        testState.patch({hosts, snapshots: {...state.snapshots,[host.id]:{...m4Record,snapshot},[pending.id]:undefined}})
+      })()`)
+      await waitFor("document.querySelector('section[aria-label=总览] h1').textContent==='需要处理'")
+      assert.equal(await evaluate("document.querySelector('main > header h1')"), null)
+      assert.ok(await evaluate("document.querySelector('section[aria-label=总览]').innerText.includes('1 台待确认')"))
+      const toggle = "Array.from(document.querySelectorAll('section[aria-label=总览] button[aria-expanded]')).find(b=>b.textContent.includes('1 风险 · 2 提醒'))"
+      const expand = "Array.from(document.querySelectorAll('section[aria-label=总览] button[aria-expanded]')).find(b=>b.textContent==='+2 项')"
+      assert.equal(await evaluate(`(${toggle}).getAttribute('aria-expanded')`), 'true')
+      assert.ok(await evaluate(`(${expand}).parentElement.innerText.includes('磁盘使用率过高') && (${expand}).parentElement.innerText.includes('去清理')`))
+      const facts = "document.querySelector('[data-card-facts]')"
+      assert.ok(await evaluate(`(${facts}).innerText.includes('已运行 3时25分 · 负载 4.25 · 容器 6') && (${facts}).scrollWidth <= (${facts}).clientWidth`))
+      assert.equal(await evaluate("document.querySelector('section[aria-label=总览]').innerText.includes('0 分钟前更新')"), false)
+      assert.ok(await evaluate("document.querySelector('article button[aria-label=刷新]').title.includes('刚刚更新')"))
+      await capture(`review-issues-${width}-${theme}`)
+      await evaluate(`(${expand}).click()`)
+      const expanded = "Array.from(document.querySelectorAll('section[aria-label=总览] button')).find(b=>b.textContent==='看资产')"
+      await waitFor(expanded)
+      assert.ok(await evaluate(`(${expanded}).parentElement.parentElement.innerText.includes('每核负载过高')`))
+      await capture(`review-expanded-${width}-${theme}`)
+      await evaluate(`(${toggle}).click()`)
+      await waitFor(`!(${expanded})`)
+      await capture(`review-collapsed-${width}-${theme}`)
+      await evaluate(`(${toggle}).click()`)
+      await waitFor(expanded)
+      await evaluate(`(${expanded}).click()`)
+      await waitFor("testState.getState().route.page==='host' && testState.getState().route.section==='assets'")
+    }
+    await main.evaluate('testElectron.BrowserWindow.getAllWindows()[0].setContentSize(1024,700)')
     await arrange(8, 'light')
     await evaluate("document.querySelector('[data-overview-limited-host=\"'+fileHost.id+'\"]').scrollIntoView({block:'center'})")
     await click(`[data-overview-limited-host="${await evaluate('fileHost.id')}"]`)
     await waitFor("testState.getState().route.page==='host' && testState.getState().route.hostId===fileHost.id")
-    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('nav[aria-label=主机功能] button')).map(b=>b.textContent)"), ['状态','安全','维护','文件','资产'])
+    const visibleTabs = "Array.from(document.querySelectorAll('nav[aria-label=主机功能]')).filter(nav=>nav.getClientRects().length)"
+    assert.equal(await evaluate(`${visibleTabs}.length`), 1)
+    assert.deepEqual(await evaluate(`Array.from(${visibleTabs}[0].querySelectorAll('button')).map(b=>b.textContent)`), ['状态','安全','维护','文件','资产'])
     assert.equal(await evaluate("Array.from(document.querySelectorAll('button')).find(b=>b.textContent==='打开终端').disabled"), false)
     first.cleanup.enabled = true
     const beforeReads = first.cleanup.collectReads

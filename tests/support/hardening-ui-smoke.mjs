@@ -18,7 +18,7 @@ export async function hardeningUiSmoke({ browser, main, evaluate, waitFor, delay
     assert.equal(await evaluate("document.querySelectorAll('article .gauge-bar').length"), 3)
     assert.ok(await evaluate("document.querySelector('article').innerText.includes('分钟前更新')"))
     assert.equal(await evaluate("document.querySelector('article').innerText.includes('运行正常')"), false)
-    assert.equal(await evaluate("document.querySelector('section[aria-label=服务器总览] h1')?.textContent ?? document.querySelector('section[aria-label] h1')?.textContent"), '1 台待更新，点全部刷新')
+    assert.equal(await evaluate("document.querySelector('section[aria-label=服务器总览] h1')?.textContent ?? document.querySelector('section[aria-label] h1')?.textContent"), '1 台待更新')
     await capture(`stale-overview-${theme}`)
     await evaluate("testNav.openHost(fileHost.id,'status')")
     await waitFor("document.querySelector('header [data-snapshot-stale]')")

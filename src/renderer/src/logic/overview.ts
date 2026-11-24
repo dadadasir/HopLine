@@ -29,7 +29,10 @@ export function cardCounts(snapshot: HostSnapshot | null, now: number, locale: L
   })
 }
 export function updatedAgo(updatedAt: number | null, now: number, locale: Locale): string {
-  return updatedAt === null ? translate(locale, 'overview.never') : translate(locale, 'overview.ago', { minutes: Math.max(0, Math.floor((now - updatedAt) / 60_000)) })
+  if (updatedAt === null || !Number.isFinite(updatedAt)) return translate(locale, 'overview.never')
+  const minutes = Math.floor((now - updatedAt) / 60_000)
+  if (minutes <= 0) return translate(locale, 'overview.justUpdated')
+  return translate(locale, minutes === 1 ? 'overview.agoOne' : 'overview.ago', { minutes })
 }
 export function money(amount: number, currency: string, locale: Locale): string {
   return new Intl.NumberFormat(locale === 'zh' ? 'zh-CN' : 'en-US', { style: 'currency', currency, currencyDisplay: currency === 'USD' || currency === 'CNY' ? 'narrowSymbol' : 'symbol' }).format(amount / 100)

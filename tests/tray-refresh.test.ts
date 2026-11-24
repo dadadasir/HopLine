@@ -43,7 +43,7 @@ it('recomputes cached age when the existing menu opens without a collection call
   expect(records).toHaveBeenCalledTimes(2); expect(vi.getTimerCount()).toBe(0)
   expect(open).not.toHaveBeenCalled(); expect(quit).not.toHaveBeenCalled()
   rows = {}; menu.emit('menu-will-show')
-  expect(menu.items[1].label).toBe('测试主机 · 尚未采集')
+  expect(menu.items[1].label).toBe('测试主机 · 未采集')
   menu.items.at(-2)!.click!(); menu.items.at(-1)!.click!()
   expect(open).toHaveBeenCalledOnce(); expect(quit).toHaveBeenCalledOnce()
   tray.dispose(); expect(tray.active).toBe(false)

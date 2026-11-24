@@ -156,7 +156,7 @@ export async function cleanupUiSmoke({ browser, evaluate, waitFor, click, key, d
   assert.equal(await evaluate("JSON.stringify(await hopline.oplog.list(fileHost.id)).includes('cleanup-smoke-private')"), false)
   await themes('results-incomplete')
   // Rescan asks for a fresh password, then demonstrate a fully completed result.
-  await evaluate("[...document.querySelectorAll('[data-cleanup-footer] button')].find(b=>b.textContent==='再扫描一次').click()")
+  await evaluate("[...document.querySelectorAll('[data-cleanup-footer] button')].find(b=>b.textContent==='重新扫描').click()")
   await waitFor("document.querySelector('input[type=password]')")
   assert.equal(await evaluate("document.querySelector('input[type=password]').value"), '')
   first.cleanup.applies.length = 0
@@ -217,7 +217,7 @@ export async function cleanupUiSmoke({ browser, evaluate, waitFor, click, key, d
   assert.ok(!(await cleanupText()).includes('cleanup-smoke-private'))
   await themes('target-changed')
   await evaluate('await hopline.hosts.save(fileHost);await testState.reloadCatalog()')
-  await evaluate("[...document.querySelectorAll('[data-cleanup-footer] button')].find(b=>b.textContent==='再扫描一次').click()")
+  await evaluate("[...document.querySelectorAll('[data-cleanup-footer] button')].find(b=>b.textContent==='重新扫描').click()")
   await waitFor("document.querySelector('#kbd-form input') || document.querySelector('[data-cleanup-panel] input[type=password]')")
   if (await evaluate("!!document.querySelector('#kbd-form input')")) {
     await evaluate("document.querySelector('#kbd-form input').focus()")

@@ -9,7 +9,7 @@ it('uses only cached status for every host and never exposes endpoint or credent
   const rows = trayRows(hosts, { one: { snapshot, error: null, updatedAt: 123 }, three: { snapshot, error: 'secret-error', updatedAt: 123 } }, 'zh', 123)
   expect(rows).toHaveLength(3)
   expect(rows[0]).toMatch(/^第一台 · /)
-  expect(rows[1]).toBe('未检查 · 尚未采集')
+  expect(rows[1]).toBe('未检查 · 未采集')
   expect(rows[2]).toBe('有 换行 菜单 · 上次检查失败')
   expect(rows.join('\n')).not.toMatch(/private-address|private-user|secret-error/)
   expect(trayRows(hosts, {}, 'en')[0]).toBe('第一台 · Not collected')

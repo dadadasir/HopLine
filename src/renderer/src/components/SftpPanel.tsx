@@ -244,6 +244,7 @@ async function downloadSelected(sessionId: string, entry: SftpEntry | null) {
 export function requestEdit(sessionId: string, remotePath: string, t: (key: string, vars?: Record<string, string | number>) => string) {
   patch({ confirm: {
     title: t('sftp.editConfirmTitle'), body: t('sftp.editConfirmBody', { path: remotePath }),
+    details: { label: t('sftp.editConfirmDetailsLabel'), body: t('sftp.editConfirmDetails') },
     confirm: t('sftp.editConfirmAction'), danger: true,
     run: async () => {
       await api().sftp.edit(sessionId, remotePath).catch(error => { throw new Error(transferErrorText(error)) })

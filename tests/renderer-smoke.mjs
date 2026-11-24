@@ -23,9 +23,10 @@ const { Server, utils } = require('ssh2')
 const pty = require('node-pty')
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'hopline-renderer-smoke-'))
-// Historical flows remain exercised, but their screenshots are temporary.
+// Keep all screenshots on request; default historical captures are temporary.
 const roundScreenshotDirectory = process.env.HOPLINE_SMOKE_SCREENSHOTS || os.tmpdir()
-const screenshotDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'hopline-smoke-history-'))
+const screenshotDirectory = process.env.HOPLINE_SMOKE_SCREENSHOTS
+  ? path.join(roundScreenshotDirectory, 'full') : fs.mkdtempSync(path.join(os.tmpdir(), 'hopline-smoke-history-'))
 fs.mkdirSync(roundScreenshotDirectory, { recursive: true })
 const smokeWindows = process.env.HOPLINE_SMOKE_NATIVE !== '1'
 fs.mkdirSync(screenshotDirectory, { recursive: true })
@@ -480,14 +481,31 @@ try {
   await evaluate("fillHost('名称','Form smoke host'); fillHost('主机','127.0.0.1'); fillHost('用户名','   '); fillHost('分组','__new__')")
   await waitFor("document.querySelector('[role=dialog]').innerText.includes('新分组名称')")
   await evaluate("fillHost('新分组名称','Form smoke group')")
-  await evaluate("document.querySelector('[role=dialog] form').requestSubmit()")
+  await evaluate("document.querySelector('[role=dialog] button[type=submit][form]:not([value])').click()")
   await waitFor("document.querySelector('[role=dialog] [role=alert]')")
+  assert.ok(await evaluate(`(() => {
+    const dialog = document.querySelector('[role=dialog][data-drawer]')
+    const alert = dialog.querySelector('[role=alert]'), form = dialog.querySelector('form')
+    const buttons = [...alert.parentElement.querySelectorAll('button[type=submit]')]
+    return !form.contains(alert) && buttons.length === 2 && buttons.every(btn => btn.form === form)
+      && alert.getBoundingClientRect().bottom < buttons[0].getBoundingClientRect().top
+  })()`), 'The backend error remains visible above both associated footer submit buttons')
   assert.equal(await evaluate('(await hopline.groups.list()).length'), groupsBefore)
   assert.ok(await evaluate("[...document.querySelectorAll('[role=dialog] input')].some(input=>input.value==='Form smoke group')"))
-  await evaluate("fillHost('用户名','smoke'); document.querySelector('[role=dialog] form').requestSubmit()")
+  const tabsBeforeEnter = await evaluate('testState.getState().tabs.length')
+  await evaluate("fillHost('用户名','smoke'); document.querySelector('[role=dialog] form input').focus()")
+  await key('Enter')
   await waitFor('testState.getState().hostDialog === false')
   await evaluate("await testState.reloadCatalog(); window.formHost = testState.getState().hosts.find(host=>host.name==='Form smoke host')")
   assert.equal(await evaluate("testState.getState().groups.find(group=>group.id===formHost.groupId).name"), 'Form smoke group')
+  assert.equal(await evaluate('testState.getState().tabs.length'), tabsBeforeEnter, 'Enter defaults to Save without connecting')
+  await evaluate('testState.patch({hostDialog:formHost})')
+  await waitFor("document.querySelector('[role=dialog] form textarea')")
+  assert.equal(await evaluate("document.querySelectorAll('[role=dialog] form textarea').length"), 1)
+  await evaluate("document.querySelector('[role=dialog] form button[aria-expanded]').click()")
+  await evaluate("Array.from(document.querySelectorAll('[role=dialog] form button')).find(b=>b.textContent.includes('代理')).click()")
+  assert.equal(await evaluate("document.querySelectorAll('[role=dialog] form textarea').length"), 1, 'Proxy settings must not introduce another Notes field')
+  await key('Escape')
   await click('[aria-label="收起侧栏"]')
   await waitFor('testState.getState().sidebarCollapsed && testState.getState().settings.sidebarCollapsed')
   await evaluate('await hopline.hosts.save(formHost); await testState.reloadCatalog()')
@@ -866,5 +884,5 @@ try {
   if (app?.pid) { try { process.kill(-app.pid, 'SIGTERM') } catch {} }
   await delay(500)
   fs.rmSync(profile, { recursive: true, force: true })
-  fs.rmSync(screenshotDirectory, { recursive: true, force: true })
+  if (!process.env.HOPLINE_SMOKE_SCREENSHOTS) fs.rmSync(screenshotDirectory, { recursive: true, force: true })
 }
