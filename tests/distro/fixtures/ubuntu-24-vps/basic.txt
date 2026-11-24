@@ -1,0 +1,148 @@
+===HOPLINE:os-release===
+PRETTY_NAME="Ubuntu 24.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+===HOPLINE:uname===
+Linux hopline-test 6.8.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Apr 20 00:40:06 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+===HOPLINE:id===
+uid=65534(nobody) gid=65534(nogroup) groups=65534(nogroup)
+===HOPLINE:df===
+Filesystem     1024-blocks    Used Available Capacity Mounted on
+tmpfs               252808     948    251860       1% /run
+/dev/vda2         45060316 2744056  40006308       7% /
+tmpfs              1264032       0   1264032       0% /dev/shm
+tmpfs                 5120       0      5120       0% /run/lock
+tmpfs               252804      12    252792       1% /run/user/0
+===HOPLINE:memory===
+               total        used        free      shared  buff/cache   available
+Mem:         2528064      354924     1365712        2496     1008652     2173140
+Swap:        1311720           0     1311720
+===HOPLINE:loadavg===
+0.10 0.14 0.12 1/132 7023
+===HOPLINE:listeners===
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      4096      hopline-test:53        hopline-test:*
+LISTEN 0      4096   hopline-test%lo:53        hopline-test:*
+LISTEN 0      4096               *:22              *:*
+===HOPLINE:ps===
+    PID USER     COMMAND         COMMAND
+      1 root     systemd [arguments redacted]
+      2 root     kthreadd [arguments redacted]
+      3 root     pool_workqueue_ [arguments redacted]
+      4 root     kworker/R-rcu_g [arguments redacted]
+      5 root     kworker/R-rcu_p [arguments redacted]
+      6 root     kworker/R-slub_ [arguments redacted]
+      7 root     kworker/R-netns [arguments redacted]
+      8 root     kworker/0:0-cgw [arguments redacted]
+      9 root     kworker/0:0H-kb [arguments redacted]
+     11 root     kworker/u4:0-fl [arguments redacted]
+     12 root     kworker/R-mm_pe [arguments redacted]
+     13 root     rcu_tasks_kthre [arguments redacted]
+     14 root     rcu_tasks_rude_ [arguments redacted]
+     15 root     rcu_tasks_trace [arguments redacted]
+     16 root     ksoftirqd/0 [arguments redacted]
+     17 root     rcu_preempt [arguments redacted]
+     18 root     migration/0 [arguments redacted]
+     19 root     idle_inject/0 [arguments redacted]
+     20 root     cpuhp/0 [arguments redacted]
+     21 root     cpuhp/1 [arguments redacted]
+     22 root     idle_inject/1 [arguments redacted]
+     23 root     migration/1 [arguments redacted]
+     24 root     ksoftirqd/1 [arguments redacted]
+     26 root     kworker/1:0H-ev [arguments redacted]
+     29 root     kdevtmpfs [arguments redacted]
+     30 root     kworker/R-inet_ [arguments redacted]
+     31 root     kworker/u5:1-ev [arguments redacted]
+     32 root     kauditd [arguments redacted]
+     33 root     khungtaskd [arguments redacted]
+     34 root     oom_reaper [arguments redacted]
+     36 root     kworker/R-write [arguments redacted]
+     37 root     kcompactd0 [arguments redacted]
+     38 root     ksmd [arguments redacted]
+     39 root     kworker/1:1-eve [arguments redacted]
+     40 root     khugepaged [arguments redacted]
+     41 root     kworker/R-kinte [arguments redacted]
+     42 root     kworker/R-kbloc [arguments redacted]
+     43 root     kworker/R-blkcg [arguments redacted]
+     44 root     irq/9-acpi [arguments redacted]
+     45 root     kworker/R-tpm_d [arguments redacted]
+     46 root     kworker/R-ata_s [arguments redacted]
+     47 root     kworker/R-md [arguments redacted]
+     48 root     kworker/R-md_bi [arguments redacted]
+     49 root     kworker/R-edac- [arguments redacted]
+     50 root     kworker/R-devfr [arguments redacted]
+     51 root     watchdogd [arguments redacted]
+     52 root     kworker/1:1H-kb [arguments redacted]
+     53 root     kswapd0 [arguments redacted]
+     54 root     ecryptfs-kthrea [arguments redacted]
+     55 root     kworker/R-kthro [arguments redacted]
+     56 root     kworker/R-acpi_ [arguments redacted]
+     57 root     kworker/u6:2-ev [arguments redacted]
+     58 root     scsi_eh_0 [arguments redacted]
+     59 root     kworker/R-scsi_ [arguments redacted]
+     60 root     scsi_eh_1 [arguments redacted]
+     61 root     kworker/R-scsi_ [arguments redacted]
+     63 root     kworker/u6:4-ev [arguments redacted]
+     64 root     kworker/1:2-eve [arguments redacted]
+     65 root     kworker/R-mld [arguments redacted]
+     66 root     kworker/R-ipv6_ [arguments redacted]
+     74 root     kworker/R-kstrp [arguments redacted]
+     76 root     kworker/u7:0 [arguments redacted]
+     77 root     kworker/u8:0 [arguments redacted]
+     78 root     kworker/u9:0 [arguments redacted]
+     83 root     kworker/R-crypt [arguments redacted]
+     92 root     kworker/u5:2-ev [arguments redacted]
+     93 root     kworker/R-charg [arguments redacted]
+    141 root     kworker/u4:1-ex [arguments redacted]
+    188 root     kworker/R-raid5 [arguments redacted]
+    228 root     jbd2/vda2-8 [arguments redacted]
+    229 root     kworker/R-ext4- [arguments redacted]
+    321 root     kworker/R-kmpat [arguments redacted]
+    322 root     kworker/R-kmpat [arguments redacted]
+    330 root     multipathd [arguments redacted]
+    376 root     systemd-udevd [arguments redacted]
+    436 systemd+ systemd-resolve [arguments redacted]
+    441 systemd+ systemd-timesyn [arguments redacted]
+    445 root     psimon [arguments redacted]
+    468 systemd+ systemd-network [arguments redacted]
+    537 root     kworker/R-cfg80 [arguments redacted]
+    560 root     kworker/0:2H-kb [arguments redacted]
+    577 root     systemd-logind [arguments redacted]
+    578 message+ dbus-daemon [arguments redacted]
+    585 polkitd  polkitd [arguments redacted]
+    619 root     udisksd [arguments redacted]
+    668 root     unattended-upgr [arguments redacted]
+    704 syslog   rsyslogd [arguments redacted]
+    743 root     ModemManager [arguments redacted]
+    793 root     cron [arguments redacted]
+    826 root     agetty [arguments redacted]
+    847 root     sshd [arguments redacted]
+   1081 root     kworker/R-tls-s [arguments redacted]
+   1814 root     kworker/u6:0-ev [arguments redacted]
+   1830 root     psimon [arguments redacted]
+   1832 root     systemd [arguments redacted]
+   1833 root     (sd-pam) [arguments redacted]
+   1838 root     psimon [arguments redacted]
+   1904 root     sshd [arguments redacted]
+   2262 root     kworker/u5:0-fl [arguments redacted]
+   2307 root     kworker/1:0-ine [arguments redacted]
+   2835 root     systemd-journal [arguments redacted]
+   3014 root     kworker/0:1-cgr [arguments redacted]
+   3015 root     kworker/0:3-ata [arguments redacted]
+   4215 root     kworker/u6:1-ev [arguments redacted]
+   5301 root     kworker/u5:3-fl [arguments redacted]
+   6947 root     kworker/1:3-eve [arguments redacted]
+   6960 root     sshd [arguments redacted]
+   7016 root     runuser [arguments redacted]
+   7017 nobody   sh [arguments redacted]
+   7025 nobody   ps [arguments redacted]

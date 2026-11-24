@@ -4,7 +4,7 @@ Notable user-facing changes are recorded here, using [Keep a Changelog](https://
 
 ## [0.4.0] - 2026-11-23
 
-首次公开发布仅提供 **macOS Apple Silicon（arm64）ZIP 安装包**。安装包已使用 Developer ID 签名并经 Apple 公证。下载 ZIP，按[发行说明](docs/release-notes-0.4.0.md#sha-256-校验)校验 SHA-256，解压后将 HopLine 拖入「应用程序」并打开。
+首次公开发布仅提供 **macOS Apple Silicon（arm64）ZIP 安装包**。安装包已使用 Developer ID 签名并经 Apple 公证。下载 ZIP，按[发行说明](docs/release-notes-0.4.0.md)校验 SHA-256，解压后将 HopLine 拖入「应用程序」并打开。
 
 从 0.3.x 升级后首次打开 HopLine 时，macOS 可能请求访问钥匙串。请在系统提示时输入开机密码并选择「始终允许」。钥匙串读取失败时，总览会提供「退出并重新打开」。
 
@@ -45,7 +45,7 @@ Notable user-facing changes are recorded here, using [Keep a Changelog](https://
 
 ### Release scope
 
-The first public release provides a **macOS Apple Silicon (arm64) ZIP package only**. The package is signed with Developer ID and notarized by Apple. Download the ZIP, [verify its SHA-256 checksum](docs/release-notes-0.4.0.md#verify-sha-256), extract it, then drag HopLine into **Applications** and open it.
+The first public release provides a **macOS Apple Silicon (arm64) ZIP package only**. The package is signed with Developer ID and notarized by Apple. Download the ZIP, [verify its SHA-256 checksum](docs/release-notes-0.4.0.md), extract it, then drag HopLine into **Applications** and open it.
 
 The first time you open HopLine after upgrading from 0.3.x, macOS may request access to Keychain. When prompted, enter your Mac login password and choose **Always Allow**. If HopLine cannot read Keychain, Overview offers **Quit and reopen**.
 

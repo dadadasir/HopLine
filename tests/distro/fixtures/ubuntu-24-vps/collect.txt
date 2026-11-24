@@ -1,0 +1,170 @@
+===HOPLINE:os===
+PRETTY_NAME="Ubuntu 24.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+
+Linux 6.8.0-31-generic x86_64
+
+
+#HOPLINE-END
+===HOPLINE:uptime===
+1094.96 2059.08
+
+
+#HOPLINE-END
+===HOPLINE:cpu===
+cores 2
+cpu  6225 208 5031 205908 570 0 73 16 0 0
+
+
+cpu  6226 208 5032 206107 570 0 73 16 0 0
+
+
+#HOPLINE-END
+===HOPLINE:memory===
+MemTotal:        2528064 kB
+MemFree:         1372480 kB
+MemAvailable:    2179916 kB
+Buffers:           72696 kB
+Cached:           773472 kB
+SwapCached:            0 kB
+Active:           332364 kB
+Inactive:         544484 kB
+Active(anon):      41924 kB
+Inactive(anon):        0 kB
+Active(file):     290440 kB
+Inactive(file):   544484 kB
+Unevictable:       28816 kB
+Mlocked:           27280 kB
+SwapTotal:       1311720 kB
+SwapFree:        1311720 kB
+Zswap:                 0 kB
+Zswapped:              0 kB
+Dirty:               368 kB
+Writeback:             0 kB
+AnonPages:         59504 kB
+Mapped:            51896 kB
+Shmem:              2496 kB
+KReclaimable:     162492 kB
+Slab:             209864 kB
+SReclaimable:     162492 kB
+SUnreclaim:        47372 kB
+KernelStack:        2128 kB
+PageTables:         2144 kB
+SecPageTables:         0 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     2575752 kB
+Committed_AS:     256280 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:       15052 kB
+VmallocChunk:          0 kB
+Percpu:             1168 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+Unaccepted:            0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      108396 kB
+DirectMap2M:     1464320 kB
+DirectMap1G:     2097152 kB
+
+
+#HOPLINE-END
+===HOPLINE:load===
+0.09 0.14 0.12 1/132 7085
+
+
+#HOPLINE-END
+===HOPLINE:disk===
+Filesystem     1024-blocks    Used Available Capacity Mounted on
+tmpfs               252808     948    251860       1% /run
+/dev/vda2         45060316 2744060  40006304       7% /
+tmpfs              1264032       0   1264032       0% /dev/shm
+tmpfs                 5120       0      5120       0% /run/lock
+tmpfs               252804      12    252792       1% /run/user/0
+
+#HOPLINE-MOUNTS
+sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
+proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+udev /dev devtmpfs rw,nosuid,relatime,size=1227732k,nr_inodes=306933,mode=755,inode64 0 0
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
+tmpfs /run tmpfs rw,nosuid,nodev,noexec,relatime,size=252808k,mode=755,inode64 0 0
+/dev/vda2 / ext4 rw,relatime 0 0
+securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev,inode64 0 0
+tmpfs /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=5120k,inode64 0 0
+cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot 0 0
+pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
+bpf /sys/fs/bpf bpf rw,nosuid,nodev,noexec,relatime,mode=700 0 0
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=32,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=4253 0 0
+mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0
+hugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M 0 0
+tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0
+fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0
+binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,nosuid,nodev,noexec,relatime 0 0
+tmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=252804k,nr_inodes=63201,mode=700,inode64 0 0
+
+
+#HOPLINE-END
+===HOPLINE:listeners===
+LISTEN 0      4096      hopline-test:53 hopline-test:*
+LISTEN 0      4096   hopline-test%lo:53 hopline-test:*
+LISTEN 0      4096               *:22       *:*
+
+
+#HOPLINE-END
+===HOPLINE:docker===
+
+#HOPLINE-UNAVAILABLE not-installed sh: 5: docker: not found
+
+#HOPLINE-END
+===HOPLINE:services===
+cron.service                loaded active running Regular background program processing daemon
+dbus.service                loaded active running D-Bus System Message Bus
+getty@tty1.service          loaded active running Getty on tty1
+ModemManager.service        loaded active running Modem Manager
+multipathd.service          loaded active running Device-Mapper Multipath Device Controller
+polkit.service              loaded active running Authorization Manager
+rsyslog.service             loaded active running System Logging Service
+ssh.service                 loaded active running OpenBSD Secure Shell server
+systemd-journald.service    loaded active running Journal Service
+systemd-logind.service      loaded active running User Login Management
+systemd-networkd.service    loaded active running Network Configuration
+systemd-resolved.service    loaded active running Network Name Resolution
+systemd-timesyncd.service   loaded active running Network Time Synchronization
+systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files
+udisks2.service             loaded active running Disk Manager
+unattended-upgrades.service loaded active running Unattended Upgrades Shutdown
+user@0.service              loaded active running User Manager for UID 0
+
+
+#HOPLINE-END
+===HOPLINE:web===
+#HOPLINE-UNAVAILABLE not-installed nginx and caddy configuration
+
+#HOPLINE-END
+===HOPLINE:certs===
+
+#HOPLINE-END

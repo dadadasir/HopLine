@@ -1,77 +1,53 @@
 # HopLine 0.4.0
 
-HopLine 是本地优先的 VPS 管家，通过 SSH 管理服务器，无需安装远端 agent。
+HopLine 是给独立开发者的 VPS 管家：连上 SSH 就能看清每台机器的健康、问题和续费，服务器上不用装任何东西。这是首个公开版本。
 
 ## 主要功能
 
-- 多标签 SSH、本地终端、SFTP、远程编辑、跳板机、代理、端口转发和 SSH 配置导入。
-- 主机总览、健康分、安全体检与先预览再执行的维护流程。窗口可见时自动采集前五台主机，总览每分钟刷新，其他页面默认每五分钟刷新。可在外观设置里调整间隔或关闭自动采集。所有主机均可在详情页手动刷新。
-- 月／年费用总览，人民币／美元双币显示，欧洲央行参考汇率及本地缓存；续费与证书提醒统一为 15 天，周期续费日期自动顺延显示。
-- 主机详情可复制 SSH 命令和连接信息。连接信息含备注与已保存的密码，私钥与口令留在本机。连接编辑框提供受保护的密码与口令显示和复制。侧栏多选按可见顺序逐行复制 SSH 命令，支持粘贴 SSH 命令和识别开通文本。
-- 本地加密备份、WebDAV 手动快照、菜单栏摘要与双语界面。
+- **总览**：几台正常、哪台要处理、每月花多少、谁快到期，一页看清。窗口开着时自动采集前 5 台主机。
+- **费用与续费**：记录价格和续费日期，人民币、美元双币汇总，到期前 15 天提醒。
+- **安全与维护**：安全体检、新机初始化、磁盘分析与清理，操作前都先预览命令。
+- **连接与终端**：多标签 SSH 终端、SFTP 文件、远程编辑，支持跳板机、代理和 `~/.ssh/config` 导入。
+- **数据留在本机**：密码交给系统钥匙串，支持本地加密备份和 WebDAV。
 
-## 安装与升级
+## 安装
 
-0.4.0 的 macOS 安装包已使用 Developer ID 签名并经 Apple 公证。
+1. 下载下方的 `Hopline-0.4.0-community-mac-arm64.zip`（Apple Silicon Mac）。
+2. 解压，把 HopLine 拖进「应用程序」，然后打开。
 
-1. 下载 Apple Silicon（arm64）ZIP 和 `SHA256SUMS.txt`。
-2. 校验 ZIP 的 SHA-256 后解压。
-3. 将 HopLine 拖入「应用程序」，然后打开。
+安装包已签名并经过 Apple 公证。首次打开时 macOS 可能请求访问钥匙串，输入开机密码并选择「始终允许」即可。
 
-从 0.3.x 升级后首次打开 HopLine 时，macOS 可能请求访问钥匙串。请在系统提示时输入开机密码并选择「始终允许」。钥匙串读取失败时，总览会提供「退出并重新打开」。
+想校验下载文件的话，把 ZIP 和 `SHA256SUMS.txt` 放在同一目录，运行 `shasum -a 256 -c SHA256SUMS.txt`，应显示 `OK`。
 
-## 已知限制与反馈
+## 下一版本预告
 
-- 0.4.0 仅提供 Apple Silicon Mac 安装包。
-- 退出应用后停止采集。
-- 暂不支持多设备同步。
-- 问题反馈和功能建议只通过 [Issues](https://github.com/dadadasir/HopLine/issues) 接受。
+计划适配 AI 编程工具（MCP），让 Codex、Claude Code、Cursor 等工具能直接连上 HopLine 里的主机。
 
-## SHA-256 校验
-
-将 ZIP 和 `SHA256SUMS.txt` 下载到同一目录，在终端运行：
-
-```sh
-shasum -a 256 -c SHA256SUMS.txt
-```
-
-应显示对应 ZIP 为 `OK`。如只下载部分文件，请从清单中选择对应行校验；不一致时不要打开安装包。
+问题和建议欢迎提交到 [Issues](https://github.com/dadadasir/HopLine/issues)。
 
 ---
 
-HopLine is a local-first VPS manager that connects over SSH without installing a server agent.
+HopLine is a VPS manager for indie developers. Connect over SSH to see the health, issues, and renewals of every server, with nothing installed on your servers. This is the first public release.
 
 ## Highlights
 
-- SSH tabs, local terminals, SFTP, remote editing, jump hosts, proxies, port forwarding and SSH configuration import.
-- Host overview, health scores, security checks and maintenance with command previews. While the window is visible, HopLine collects the first five hosts every minute in Overview and every five minutes elsewhere by default. Adjust or disable automatic collection in Appearance settings. Refresh any host from its details.
-- Monthly/yearly billing, CNY/USD display, ECB reference rates with local caching, 15-day renewal/certificate notices and derived recurring renewal dates.
-- Copy SSH commands and connection information from the host heading. The connection card includes the note and any saved password. Private keys and passphrases stay local. Reveal or copy protected passwords and passphrases in the connection editor. Copy one SSH command per selected host in visible sidebar order. SSH paste and provisioning-text recognition are supported.
-- Encrypted local backups, manual WebDAV snapshots, menu-bar summaries and Chinese/English interfaces.
+- **Overview**: See which servers are fine, which need attention, what you spend each month, and what renews soon. The first 5 hosts are collected automatically while the window is open.
+- **Costs and renewals**: Track prices and renewal dates, with CNY/USD totals and reminders 15 days ahead.
+- **Security and maintenance**: Security checks, new-server setup, and disk cleanup, all with command previews before anything runs.
+- **Connections and terminal**: Tabbed SSH terminals, SFTP, remote editing, jump hosts, proxies, and `~/.ssh/config` import.
+- **Your data stays local**: Passwords go into the system keychain, with encrypted local backups and optional WebDAV.
 
-## Install and upgrade
+## Install
 
-The 0.4.0 macOS package is signed with Developer ID and notarized by Apple.
+1. Download `Hopline-0.4.0-community-mac-arm64.zip` below (Apple Silicon Macs).
+2. Unzip it, drag HopLine into **Applications**, and open it.
 
-1. Download the Apple Silicon (arm64) ZIP and `SHA256SUMS.txt`.
-2. Verify the ZIP’s SHA-256 checksum and extract it.
-3. Drag HopLine into **Applications**, then open it.
+The app is signed and notarized by Apple. On first launch, macOS may ask for Keychain access; enter your Mac login password and choose **Always Allow**.
 
-The first time you open HopLine after upgrading from 0.3.x, macOS may request access to Keychain. When prompted, enter your Mac login password and choose **Always Allow**. If HopLine cannot read Keychain, Overview offers **Quit and reopen**.
+To verify the download, put the ZIP and `SHA256SUMS.txt` in the same folder and run `shasum -a 256 -c SHA256SUMS.txt`. It should report `OK`.
 
-## Known limits and feedback
+## Coming next
 
-- The 0.4.0 installer is available for Apple Silicon Macs only.
-- Data collection stops when you quit HopLine.
-- Multi-device sync is unavailable.
-- Bug reports and feature suggestions are accepted through [Issues](https://github.com/dadadasir/HopLine/issues) only.
+The next version plans to support AI coding tools (MCP), so tools like Codex, Claude Code, and Cursor can connect to the hosts you manage in HopLine.
 
-## Verify SHA-256
-
-Download the ZIP and `SHA256SUMS.txt` into one directory, then run:
-
-```sh
-shasum -a 256 -c SHA256SUMS.txt
-```
-
-The ZIP should report `OK`. If you downloaded only some assets, check the matching lines from the manifest. Do not open a package whose checksum differs.
+Bug reports and suggestions are welcome in [Issues](https://github.com/dadadasir/HopLine/issues).

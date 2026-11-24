@@ -1,92 +1,83 @@
 # HopLine
 
-[简体中文](README.zh-CN.md)
+[English](README.en.md)
 
-**A VPS manager for indie developers: see the health, issues, and renewals of every server at a glance.**
+**给独立开发者的 VPS 管家：一眼看清每台机器的健康、问题和续费。**
 
-You run a handful of cloud servers. Checking on them means logging in to run `top` and `df`, and renewal dates live in a notes app until one slips past. HopLine puts all of that in one clean desktop app. Connect over SSH and you're done; nothing gets installed on your servers.
+手上有几台云服务器，每次都要登上去敲 `top`、`df`，续费日期记在备忘录里，到期了才想起来？HopLine 把这些放进一个干净的桌面应用：连上 SSH 就能看，服务器上不用装任何东西。
 
-![HopLine overview](docs/screenshots/overview-en.png)
+![HopLine 总览](docs/screenshots/overview-zh.png)
 
-## Why HopLine
+## 为什么用 HopLine
 
-- **See it at a glance**: Overview tells you how many servers are healthy, which one needs attention, what you spend each month, and what renews in the next 15 days. Status is collected automatically while the window is open, so you don't refresh hosts one by one.
-- **Clean and simple**: No feature pile-up. The terminal and file browser are there when you need them and stay out of the way when you don't.
-- **No agent, your data stays local**: Status is read over SSH, with no background process left on your servers. Passwords go into the system keychain, and host details stay on your computer.
-- **Honest about problems**: Data that can't be read is marked unavailable, with the reason. Nothing is guessed or made up. Maintenance actions preview their commands before running and keep a local record.
+- **一眼看清**：几台正常、哪台要处理、每月花多少、谁快到期，总览上直接看到。
+- **干净简单**：不堆功能。终端和文件需要时都在，不需要时不打扰。
+- **数据留在本机**：只通过 SSH 读取状态，服务器上不留后台进程；密码交给系统钥匙串，主机资料只存在你的电脑上。
+- **有一说一**：拿不到的数据会标明原因，不猜测；维护操作先预览命令再执行。
 
-## Features
+## 主要功能
 
-**Overview and status**
-- CPU, memory, disk, load, and uptime for each server, plus what it's running: listening ports, containers, services, sites, and certificates.
-- While the window is visible, HopLine collects status for the first 5 hosts: every minute in Overview, and every 5 minutes elsewhere by default. Change or turn this off in **Settings → Appearance → Status collection**. You can refresh any host manually from its details.
+**总览与状态**
+- CPU、内存、磁盘、负载、运行时长，以及机器上在跑什么：端口、容器、服务、站点、证书。
+- 窗口开着时自动采集前 5 台主机，其他主机随时手动刷新。
 
-**Costs and renewals**
-- Record the provider, price, billing cycle, and renewal date. Overview totals your monthly cost in both CNY and USD.
-- Renewals and certificate expiry are flagged 15 days ahead. For recurring billing, past renewal dates roll forward automatically.
+**费用与续费**
+- 记录服务商、价格和续费日期，总览汇总每月费用，人民币、美元双币显示。
+- 续费和证书到期提前 15 天提醒。
 
-![Billing for all hosts](docs/screenshots/billing-en.png)
+![全部主机计费](docs/screenshots/billing-zh.png)
 
-**Security and maintenance**
-- Security checks with a score, evidence, and copyable fix commands.
-- A setup wizard for new servers. Every step is previewed. Before password or root login is disabled, it checks that your new key can log in. Before the firewall is enabled, it checks that the SSH port is allowed. Both checks keep you from locking yourself out.
-- Disk analysis and cleanup for Docker caches and logs, system journals, package caches, and old kernels. Unsafe steps are skipped, with an explanation.
+**安全与维护**
+- 安全体检：评分、风险说明和可复制的修复命令。
+- 新机初始化：每一步先预览，关闭密码或 root 登录前先确认新密钥能登录，避免把自己锁在门外。
+- 磁盘分析与清理：Docker、系统日志、包缓存、旧内核等，不安全的步骤会跳过并说明原因。
 
-**Connections and terminal**
-- Tabbed SSH terminals, SFTP browsing and transfers, and remote editing.
-- Password, private-key, and ssh-agent authentication (including 1Password and Secretive), plus jump hosts, proxies, and port forwarding. You can import hosts from `~/.ssh/config`.
-- Paste the welcome email from your provider and HopLine fills in the address, port, username, and password.
-- Copy the SSH command, or the full connection details (name, note, address, port, username, password), in one click. Copied passwords are cleared from the clipboard after 60 seconds.
+**连接与终端**
+- 多标签 SSH 终端、SFTP 文件浏览、远程编辑。
+- 密码、私钥、ssh-agent（支持 1Password、Secretive），跳板机、代理、端口转发，可从 `~/.ssh/config` 导入。
+- 粘贴服务商发来的开通信息，自动填好地址、端口、用户名和密码。
 
-![Host details](docs/screenshots/host-heading-en.png)
+![主机详情](docs/screenshots/host-heading-zh.png)
 
-**Backup**
-- Encrypted local backups and import/export, with optional upload to your own WebDAV server.
+**备份**
+- 本地加密备份，可选上传到你自己的 WebDAV。
 
-## Install
+## 安装
 
-HopLine is currently available for Apple Silicon Macs. The app is signed with a Developer ID and notarized by Apple.
+目前提供 Apple Silicon Mac（M 系列芯片）版本，安装包已签名并经过 Apple 公证。
 
-1. Download `Hopline-…-mac-arm64.zip` from [Releases](https://github.com/dadadasir/HopLine/releases/latest).
-2. Unzip it, drag HopLine into **Applications**, and open it.
+1. 到 [Releases](https://github.com/dadadasir/HopLine/releases/latest) 下载 `Hopline-…-mac-arm64.zip`。
+2. 解压，把 HopLine 拖进「应用程序」，然后打开。
 
-The first time you open it, macOS may ask for Keychain access, which HopLine uses to store host passwords. Enter your Mac login password and choose **Always Allow**.
+首次打开时 macOS 可能请求访问钥匙串（用来保存主机密码），输入开机密码并选择「始终允许」即可。之后可在「帮助 › 检查更新」获取新版本。
 
-To verify the download, put the ZIP and `SHA256SUMS.txt` in the same folder and run `shasum -a 256 -c SHA256SUMS.txt`. It should report `OK`.
+## 隐私
 
-Use **Help › Check for updates** to look for new versions.
+- 不收集遥测，不需要注册账号。
+- 只会主动发出两种请求，都不带主机或个人信息：每天一次检查更新（可关闭），以及填写价格后获取汇率。
+- 诊断包只在你手动导出时生成，并自动脱敏。
 
-## Privacy
+## 接下来
 
-- No telemetry and no account.
-- SSH connects directly to the hosts you configure. WebDAV connects to your own server only when you back up.
-- The app makes only two requests on its own. Neither one includes host or personal data:
-  - **Update check**: at most once a day, to this repository's GitHub Releases. You can turn it off in Settings.
-  - **Exchange rates**: at most once a day, using ECB reference rates, and only if you have entered a price.
-- Diagnostic bundles are created only when you export one. They are redacted automatically; review them yourself before sharing.
+- 下一版本计划适配 AI 编程工具（MCP），让 Codex、Claude Code、Cursor 等工具能直接连上 HopLine 里的主机。
+- 目前只有 Apple Silicon Mac 版本，暂不支持多设备同步。
 
-## Known limits
+## 从源码构建
 
-- Only an Apple Silicon Mac build is available for now.
-- Automatic collection runs only while the window is visible and stops when you quit.
-- Multi-device sync is not available.
+需要 [.nvmrc](.nvmrc) 指定的 Node.js 版本和 Xcode Command Line Tools（Linux 需要 C/C++ 编译工具链和 Python 3）。
 
-## Build from source
-
-You need the Node.js version pinned in [.nvmrc](.nvmrc), plus Xcode Command Line Tools. On Linux, install a C/C++ toolchain and Python 3 instead.
-
-```sh
+```bash
 npm ci
 npx --no-install install-electron
 npm run dev
 ```
 
-To package the community edition, run `npm run build:community`; the output goes to `release/`. See [CONTRIBUTING.md](CONTRIBUTING.md) for tests and details.
+打包开源版：`npm run build:community`，产物在 `release/`。测试与更多说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-## Feedback
+## 反馈
 
-Report bugs and suggest features through [Issues](https://github.com/dadadasir/HopLine/issues). External code PRs are not accepted for now. Report security vulnerabilities privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
+欢迎通过 [Issues](https://github.com/dadadasir/HopLine/issues) 报告问题或提建议，目前不接受外部代码 PR。安全漏洞请按 [SECURITY.md](SECURITY.md) 私下报告。
 
-## License
+## 许可证
 
 [AGPL-3.0-only](LICENSE)

@@ -1,0 +1,272 @@
+===HOPLINE:os===
+PRETTY_NAME="Ubuntu 24.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 6.8.0-31-generic x86_64
+
+#HOPLINE-END
+===HOPLINE:sshd===
+#HOPLINE-SOURCE effective
+port 22
+addressfamily any
+listenaddress hopline-test:22
+listenaddress hopline-test:22
+usepam yes
+logingracetime 120
+x11displayoffset 10
+maxauthtries 6
+maxsessions 10
+clientaliveinterval 0
+clientalivecountmax 3
+requiredrsasize 1024
+streamlocalbindmask 0177
+unusedconnectiontimeout none
+permitrootlogin yes
+ignorerhosts yes
+ignoreuserknownhosts no
+hostbasedauthentication no
+hostbasedusesnamefrompacketonly no
+pubkeyauthentication yes
+kerberosauthentication no
+kerberosorlocalpasswd yes
+kerberosticketcleanup yes
+gssapiauthentication no
+gssapicleanupcredentials yes
+gssapikeyexchange no
+gssapistrictacceptorcheck yes
+gssapistorecredentialsonrekey no
+gssapikexalgorithms gss-group14-sha256-,gss-group16-sha512-,gss-nistp256-sha256-,gss-curve25519-sha256-,gss-group14-sha1-,gss-gex-sha1-
+passwordauthentication yes
+kbdinteractiveauthentication no
+printmotd no
+printlastlog yes
+x11forwarding yes
+x11uselocalhost yes
+permittty yes
+permituserrc yes
+strictmodes yes
+tcpkeepalive yes
+permitemptypasswords no
+compression yes
+gatewayports no
+usedns no
+allowtcpforwarding yes
+allowagentforwarding yes
+disableforwarding no
+allowstreamlocalforwarding yes
+streamlocalbindunlink no
+fingerprinthash SHA256
+exposeauthinfo no
+debianbanner yes
+pidfile /run/sshd.pid
+modulifile /etc/ssh/moduli
+xauthlocation /usr/bin/xauth
+ciphers chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+macs umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+banner none
+forcecommand none
+chrootdirectory none
+trustedusercakeys none
+revokedkeys none
+securitykeyprovider internal
+authorizedprincipalsfile none
+versionaddendum none
+authorizedkeyscommand none
+authorizedkeyscommanduser none
+authorizedprincipalscommand none
+authorizedprincipalscommanduser none
+hostkeyagent none
+kexalgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+casignaturealgorithms ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+hostbasedacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+hostkeyalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+pubkeyacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+loglevel INFO
+syslogfacility AUTH
+authorizedkeysfile .ssh/authorized_keys .ssh/authorized_keys2
+hostkey /etc/ssh/ssh_host_rsa_key
+hostkey /etc/ssh/ssh_host_ecdsa_key
+hostkey /etc/ssh/ssh_host_ed25519_key
+acceptenv LANG
+acceptenv LC_*
+authenticationmethods any
+channeltimeout none
+subsystem sftp /usr/lib/openssh/sftp-server
+maxstartups 10:30:100
+persourcemaxstartups none
+persourcenetblocksize 32:128
+permittunnel no
+ipqos lowdelay throughput
+rekeylimit 0 0
+permitopen any
+permitlisten any
+permituserenvironment no
+pubkeyauthoptions none
+
+#HOPLINE-END
+===HOPLINE:firewall===
+#HOPLINE-SOURCE ufw
+Status: inactive
+#HOPLINE-SOURCE nft
+
+#HOPLINE-SOURCE iptables
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+
+#HOPLINE-END
+===HOPLINE:listeners===
+LISTEN 0      4096      hopline-test:53 hopline-test:* users:(("systemd-resolve",pid=436,fd=17))
+LISTEN 0      4096   hopline-test%lo:53 hopline-test:* users:(("systemd-resolve",pid=436,fd=15))
+LISTEN 0      4096               *:22       *:* users:(("sshd",pid=847,fd=3),("systemd",pid=1,fd=89))
+
+#HOPLINE-END
+===HOPLINE:updates===
+auto=yes
+#HOPLINE-SOURCE apt
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+pending-complete=yes
+reboot=no
+
+#HOPLINE-END
+===HOPLINE:bruteforce===
+active=no
+
+#HOPLINE-END
+===HOPLINE:accounts===
+uid0=root
+shadow=readable
+
+#HOPLINE-END
+===HOPLINE:processes===
+    PID USER     %CPU COMMAND         COMMAND
+      1 root      0.3 systemd [arguments redacted]
+      2 root      0.0 kthreadd [arguments redacted]
+      3 root      0.0 pool_workqueue_ [arguments redacted]
+      4 root      0.0 kworker/R-rcu_g [arguments redacted]
+      5 root      0.0 kworker/R-rcu_p [arguments redacted]
+      6 root      0.0 kworker/R-slub_ [arguments redacted]
+      7 root      0.0 kworker/R-netns [arguments redacted]
+      8 root      0.0 kworker/0:0-cgr [arguments redacted]
+      9 root      0.0 kworker/0:0H-kb [arguments redacted]
+     11 root      0.0 kworker/u4:0-fl [arguments redacted]
+     12 root      0.0 kworker/R-mm_pe [arguments redacted]
+     13 root      0.0 rcu_tasks_kthre [arguments redacted]
+     14 root      0.0 rcu_tasks_rude_ [arguments redacted]
+     15 root      0.0 rcu_tasks_trace [arguments redacted]
+     16 root      0.0 ksoftirqd/0 [arguments redacted]
+     17 root      0.0 rcu_preempt [arguments redacted]
+     18 root      0.0 migration/0 [arguments redacted]
+     19 root      0.0 idle_inject/0 [arguments redacted]
+     20 root      0.0 cpuhp/0 [arguments redacted]
+     21 root      0.0 cpuhp/1 [arguments redacted]
+     22 root      0.0 idle_inject/1 [arguments redacted]
+     23 root      0.0 migration/1 [arguments redacted]
+     24 root      0.0 ksoftirqd/1 [arguments redacted]
+     26 root      0.0 kworker/1:0H-ev [arguments redacted]
+     29 root      0.0 kdevtmpfs [arguments redacted]
+     30 root      0.0 kworker/R-inet_ [arguments redacted]
+     31 root      0.0 kworker/u5:1-ev [arguments redacted]
+     32 root      0.0 kauditd [arguments redacted]
+     33 root      0.0 khungtaskd [arguments redacted]
+     34 root      0.0 oom_reaper [arguments redacted]
+     36 root      0.0 kworker/R-write [arguments redacted]
+     37 root      0.0 kcompactd0 [arguments redacted]
+     38 root      0.0 ksmd [arguments redacted]
+     39 root      0.0 kworker/1:1-eve [arguments redacted]
+     40 root      0.0 khugepaged [arguments redacted]
+     41 root      0.0 kworker/R-kinte [arguments redacted]
+     42 root      0.0 kworker/R-kbloc [arguments redacted]
+     43 root      0.0 kworker/R-blkcg [arguments redacted]
+     44 root      0.0 irq/9-acpi [arguments redacted]
+     45 root      0.0 kworker/R-tpm_d [arguments redacted]
+     46 root      0.0 kworker/R-ata_s [arguments redacted]
+     47 root      0.0 kworker/R-md [arguments redacted]
+     48 root      0.0 kworker/R-md_bi [arguments redacted]
+     49 root      0.0 kworker/R-edac- [arguments redacted]
+     50 root      0.0 kworker/R-devfr [arguments redacted]
+     51 root      0.0 watchdogd [arguments redacted]
+     52 root      0.0 kworker/1:1H-kb [arguments redacted]
+     53 root      0.0 kswapd0 [arguments redacted]
+     54 root      0.0 ecryptfs-kthrea [arguments redacted]
+     55 root      0.0 kworker/R-kthro [arguments redacted]
+     56 root      0.0 kworker/R-acpi_ [arguments redacted]
+     57 root      0.0 kworker/u6:2-ev [arguments redacted]
+     58 root      0.0 scsi_eh_0 [arguments redacted]
+     59 root      0.0 kworker/R-scsi_ [arguments redacted]
+     60 root      0.0 scsi_eh_1 [arguments redacted]
+     61 root      0.0 kworker/R-scsi_ [arguments redacted]
+     63 root      0.0 kworker/u6:4-ev [arguments redacted]
+     64 root      0.0 kworker/1:2-eve [arguments redacted]
+     65 root      0.0 kworker/R-mld [arguments redacted]
+     66 root      0.0 kworker/R-ipv6_ [arguments redacted]
+     74 root      0.0 kworker/R-kstrp [arguments redacted]
+     76 root      0.0 kworker/u7:0 [arguments redacted]
+     77 root      0.0 kworker/u8:0 [arguments redacted]
+     78 root      0.0 kworker/u9:0 [arguments redacted]
+     83 root      0.0 kworker/R-crypt [arguments redacted]
+     92 root      0.0 kworker/u5:2-ev [arguments redacted]
+     93 root      0.0 kworker/R-charg [arguments redacted]
+    141 root      0.0 kworker/u4:1-ex [arguments redacted]
+    188 root      0.0 kworker/R-raid5 [arguments redacted]
+    228 root      0.0 jbd2/vda2-8 [arguments redacted]
+    229 root      0.0 kworker/R-ext4- [arguments redacted]
+    321 root      0.0 kworker/R-kmpat [arguments redacted]
+    322 root      0.0 kworker/R-kmpat [arguments redacted]
+    330 root      0.0 multipathd [arguments redacted]
+    376 root      0.0 systemd-udevd [arguments redacted]
+    436 systemd+  0.0 systemd-resolve [arguments redacted]
+    441 systemd+  0.0 systemd-timesyn [arguments redacted]
+    445 root      0.0 psimon [arguments redacted]
+    468 systemd+  0.0 systemd-network [arguments redacted]
+    537 root      0.0 kworker/R-cfg80 [arguments redacted]
+    560 root      0.0 kworker/0:2H-kb [arguments redacted]
+    577 root      0.0 systemd-logind [arguments redacted]
+    578 message+  0.0 dbus-daemon [arguments redacted]
+    585 polkitd   0.0 polkitd [arguments redacted]
+    619 root      0.0 udisksd [arguments redacted]
+    668 root      0.0 unattended-upgr [arguments redacted]
+    704 syslog    0.5 rsyslogd [arguments redacted]
+    743 root      0.0 ModemManager [arguments redacted]
+    793 root      0.0 cron [arguments redacted]
+    826 root      0.0 agetty [arguments redacted]
+    847 root      0.0 sshd [arguments redacted]
+   1081 root      0.0 kworker/R-tls-s [arguments redacted]
+   1814 root      0.0 kworker/u6:0-ev [arguments redacted]
+   1830 root      0.0 psimon [arguments redacted]
+   1832 root      0.0 systemd [arguments redacted]
+   1833 root      0.0 (sd-pam) [arguments redacted]
+   1838 root      0.0 psimon [arguments redacted]
+   1904 root      0.0 sshd [arguments redacted]
+   2262 root      0.0 kworker/u5:0-fl [arguments redacted]
+   2307 root      0.0 kworker/1:0-ine [arguments redacted]
+   2835 root      2.9 systemd-journal [arguments redacted]
+   3014 root      0.0 kworker/0:1-cgr [arguments redacted]
+   3015 root      0.0 kworker/0:3-eve [arguments redacted]
+   4215 root      0.0 kworker/u6:1-ev [arguments redacted]
+   5301 root      0.0 kworker/u5:3-ev [arguments redacted]
+   6947 root      0.0 kworker/1:3-eve [arguments redacted]
+   7110 root      0.6 sshd [arguments redacted]
+   7112 root      0.2 sshd [arguments redacted]
+   7113 sshd      0.2 sshd [arguments redacted]
+   7159 root      0.3 sh [arguments redacted]
+   7183 root      0.0 ps [arguments redacted]
+
+#HOPLINE-END
+===HOPLINE:tls===
+
+#HOPLINE-END
